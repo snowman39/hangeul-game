@@ -12,7 +12,8 @@ import { firestore } from "./Firebase";
 export default function Home() {
     const [name, setName] = useState(null);
     const [code, setCode] = useState(null);
-    const login = localStorage.getItem('uid') ? 1:0;
+    const [login, setLogin] = useState(0);
+//    const [login, setLogin] = useState(localStorage.getItem('uid') ? 1:0);
     const onStart = (e) => {
         e.preventDefault();
         document.getElementById('start').style.display = "none";
@@ -36,23 +37,61 @@ export default function Home() {
                     .then(docs => {
                         docs.forEach(doc => {
                             if(doc.id === res.id) localStorage.setItem('userName', doc.data().user);
+                            console.log("log in changed");
+                            setLogin(1);
                         })
                     })
             })
     }
     const onEnter = (e) => {
         e.preventDefault();
-        if (!code) {
-            return alert('암호를 입력하세요.');
-        }
-        firestore.collection('rooms').doc(code).set(
-            { users: [{user: localStorage.getItem('userName')}]},
-            { merge: true }
-        );
+        if (!code)  return alert('암호를 입력하세요.');
+        let roomRef = firestore.collection('rooms').doc(code);
+
+        firestore.collection('users').add({user:name})
+
+
+        roomRef.get().then(function(doc) {
+            if(doc.exists) {
+                roomRef.update(        //doc 안에 있는 data를 어떻게 받아와야할까?
+                    { users: [{user: localStorage.getItem('userName')}]}
+                        );
+            }
+            else {
+                return alert("Sorry, we don't have a room like that");
+            }
+        })
+        .catch(function(error){
+            return alert(error);
+        })
+
+        
     }
     const onNew = (e) => {
         e.preventDefault();
+        if(! code)  return alert('암호를 입력하세요.');
+        firestore.collection('rooms').doc(code).get().then(function(doc)
+        {
+            if(doc.exists)
+            {
+                return alert('Sorry, already have it');
+            }
+            else{
+                firestore.collection('rooms').doc(code).set(
+                    { users: [{user: localStorage.getItem('userName')}]},
+                    { merge: true }
+                )
+        
+            }
+        })
+        .catch(function(error){
+            return alert(error);
+        });
+
+
+
     }
+    console.log("log in doesn't have a problem", login);
     return (
         <div className="background">  
             <div>
