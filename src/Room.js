@@ -10,7 +10,7 @@ import axios from 'axios'
 import './Room.css';
 import { firestore } from "./Firebase";
 
-const APP_KEY = "80BDA3A34160D126F3FB4094CBE073EF"
+const APP_KEY = "80BDA3A34160D126F3FB4094CBE073EF" // 커밋 테스트용 주석
 
 export default function Room() {
     const [word, setWord] = useState(null);
