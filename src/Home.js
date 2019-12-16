@@ -47,23 +47,40 @@ export default function Home() {
         e.preventDefault();
         if (!code)  return alert('암호를 입력하세요.');
         let roomRef = firestore.collection('rooms').doc(code);
-
-        firestore.collection('users').add({user:name})
-
-
+        
         roomRef.get().then(function(doc) {
             if(doc.exists) {
-                roomRef.update(        //doc 안에 있는 data를 어떻게 받아와야할까?
-                    { users: [{user: localStorage.getItem('userName')}]}
-                        );
-            }
+                let users_local = doc.data().users;                             //users 목록을 users_local로 받아옴
+                let found = false;
+                users_local.forEach(function(user){
+                    if(user.user === localStorage.getItem('userName')) {
+                     console.log("있네 있어");
+                     console.log(user.user) ;  
+                     found = true;
+                    }
+                })                                                             //users_local 안에 이미 이 사람이 존재하는지 존재하지 않는지 확인(found로)
+                if(!found)                                                      //새로온 유저라면
+                {
+                users_local = users_local.concat([{user: localStorage.getItem('userName'), score_thisgame: 0}]);       //users를 새로 update
+                roomRef.set(
+                    {
+                        users: users_local,
+                        how_many: doc.data().how_many + 1
+                    }
+                        ).then(function() {
+                        console.log(doc.data().users);
+                        console.log("how many is", doc.data().how_many);                            //그냥 콘솔 확인하려구 찍어놓음. 지울 예정
+                        })
+
+                    }
+                }
             else {
                 return alert("Sorry, we don't have a room like that");
             }
-        })
-        .catch(function(error){
-            return alert(error);
-        })
+            })
+            .catch(function(error){
+                return alert(error);
+            })
 
         
     }
@@ -78,7 +95,10 @@ export default function Home() {
             }
             else{
                 firestore.collection('rooms').doc(code).set(
-                    { users: [{user: localStorage.getItem('userName')}]},
+                    {
+                        users: [{user: localStorage.getItem('userName'), score_thisgame: 0}],
+                        how_many: 1
+                    },
                     { merge: true }
                 )
         
