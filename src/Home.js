@@ -6,7 +6,6 @@ import bottom from './images/Bottom.png';
 import light from './images/Light.png';
 import arrow from './images/Arrow.png';
 import './Home.css';
-
 import { firestore } from "./Firebase";
 
 export default function Home() {
@@ -39,9 +38,8 @@ export default function Home() {
                 )}
                 localStorage.setItem('uid', name);
                 setLogin(1);
-        })
-        .catch((error) => {
-            return alert(error);
+        }).catch((err) => {
+            return alert(err);
         })
     }
     const onNew = (e) => {
@@ -53,17 +51,22 @@ export default function Home() {
             else  {
                 firestore.collection('rooms').doc(code).set(
                     {
-                        users: [{user: localStorage.getItem('uid'), score_thisgame: 0}],
-                        how_many: 1
+                        users: [{user: localStorage.getItem('uid'), score_thisgame: 0, is_ready: false}],
+                        how_many: 1,
+                        is_playing: false,
+                        round: 0
                     },
                     { merge: true },
                 )
-                localStorage.setItem('code', code);
-                window.location = `Room/${localStorage.getItem('code')}`
             }
-        })
-        .catch((error) => {
-            return alert(error);
+        }).then(()=> {
+            localStorage.setItem('code', code);
+            firestore.collection('rooms').doc(code).get()
+            .then((doc)=>{
+                if(doc.exists) window.location = `Room/${localStorage.getItem('code')}`;
+            })
+        }).catch((err) => {
+            return alert(err);
         });
     }
     const onEnter = (e) => {
@@ -79,18 +82,21 @@ export default function Home() {
                 })                                                              //users_local 안에 이미 이 사람이 존재하는지 존재하지 않는지 확인(found로)
                 if(!found)                                                      //새로온 유저라면
                 {
-                users_local = users_local.concat([{user: localStorage.getItem('uid'), score_thisgame: 0}]);       //users를 새로 update
+                users_local = users_local.concat([{user: localStorage.getItem('uid'), score_thisgame: 0, is_ready: false}]);       //users를 새로 update
                 roomRef.set(
                     {
                         users: users_local,
-                        how_many: doc.data().how_many + 1
-                    })
-                    .then(() => {
+                        how_many: doc.data().how_many + 1,
+                        is_playing: false,
+                        round: 0
+                    }).then(() => {
                         localStorage.setItem('code', code);
-                        window.location = `Room/${localStorage.getItem('code')}`
-                    })
-                    .catch((error) => {
-                        return alert("단어 입력에 실패했어요!" + error)
+                        firestore.collection('rooms').doc(code).get()
+                        .then((doc)=>{
+                            if(doc.exists) window.location = `Room/${localStorage.getItem('code')}`;
+                        })
+                    }).catch((err) => {
+                        return alert("단어 입력에 실패했어요!" + err)
                     });
                 }
             }
@@ -100,11 +106,11 @@ export default function Home() {
             console.log(`${code} 방에 입장하셨씁니다`);
             console.log(doc.data().users);
             console.log("how many is", doc.data().how_many);                            //그냥 콘솔 확인하려구 찍어놓음. 지울 예정
-            })
-            .catch((error) => {
-                return alert(error);
+            }).catch((err) => {
+                return alert(err);
             })
     }
+
     return (
         <div className="background">  
             <div>
@@ -128,7 +134,7 @@ export default function Home() {
                 </div>
                 <div>
                     {login === 0 &&
-                        <button id="start" alt="시작" onClick={onStart}>
+                        <button id="start" onClick={onStart}>
                             <div className="button-text">
                                 동전 넣기
                             </div>
@@ -156,18 +162,16 @@ export default function Home() {
                             <button className="enter-room">
                                 <div className="button-text3">기존 방</div>
                                     <form onSubmit={onEnter}>
-                                        <input type="text" name="code" placeholder="암호.." onChange={(e) => setCode(e.target.value)} className="enter">
-                                        </input>
+                                        <input type="text" name="code" placeholder="암호.." onChange={(e) => setCode(e.target.value)} className="enter"/>
                                         <input type="image" src={arrow} alt="들어가기" className="arrow"/>
                                     </form>
                             </button>
                             <button className="new-room">
                                 <div className="button-text3">새로운 방</div>
-                                <form onSubmit={onNew}>
-                                    <input type="text" name="code" placeholder="암호.." onChange={(e) => setCode(e.target.value)} className="new"/>
-                                    <input type="image" src={arrow} alt="들어가기" className="arrow"/>
-                                </form>
-                                <img src={arrow} className="arrow" alt="만들기"/>
+                                    <form onSubmit={onNew}>
+                                        <input type="text" name="code" placeholder="암호.." onChange={(e) => setCode(e.target.value)} className="new"/>
+                                        <img src={arrow} className="arrow" alt="만들기"/>
+                                    </form>
                             </button>
                         </div>
                     }

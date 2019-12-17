@@ -8,11 +8,13 @@ import playBox from './images/PlayBox.png';
 import bubble from './images/WordBubble.png';
 import axios from 'axios'
 import './Room.css';
+import { firestore } from "./Firebase";
 
 const APP_KEY = "80BDA3A34160D126F3FB4094CBE073EF"
 
 export default function Rank() {
     const [word, setWord] = useState(null);
+    const [ready, setReady] = useState(localStorage.getItem('ready') ? 1:0);
     const convert = require('xml-js');
     const timer = (sec) => {
         let timer = document.getElementById("timer")
@@ -85,6 +87,34 @@ export default function Rank() {
         }
         return result;
     }
+    const onReady = (e) => {
+        e.preventDefault();
+        let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
+        roomRef.get().then((docs) => {
+            let users_local = docs.data().users
+            users_local.forEach((user) => {
+                if(user.user === localStorage.getItem('uid'))  user.is_ready = true;
+            localStorage.setItem('ready', '1');
+            setReady(1);
+            })
+        }).catch((err) => {
+            return alert(err);
+        })
+    }
+    const onNotReady = (e) => {
+        e.preventDefault();
+        let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
+        roomRef.get().then((docs) => {
+            let users_local = docs.data().users
+            users_local.forEach((user) => {
+                if(user.user === localStorage.getItem('uid'))  user.is_ready = false;
+            localStorage.removeItem('ready');
+            setReady(0);
+            })
+        }).catch((err) => {
+            return alert(err);
+        })
+    }
     return (
         <div className="background">  
           <div>
@@ -100,6 +130,20 @@ export default function Rank() {
             </div>
             <img src={playBox} className="play-box" alt="게임판"/>
             <div className="consonant"></div>
+            {ready === 0 &&
+                <button id="ready" onClick={onReady}>
+                    <div className="button-text4">
+                        준비하기!
+                    </div>
+                </button>
+            }
+            {ready > 0 &&
+                <button id="not-ready" onClick={onNotReady}>
+                    <div className="button-text4">
+                        준비 해제!
+                    </div>
+                </button>
+            }
             <span id="consonant"></span> 
             <span id="rest-time">남은 시간:</span>
             <span id="timer"></span>
