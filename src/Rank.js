@@ -15,7 +15,7 @@ export default function Rank() {
             </div>  
             <div className="Rank">
                 <img src={box} className="rank-box" alt="명예의전당"/>
-            </div>        
+            </div>
           </div>
       </div>
     );

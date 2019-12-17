@@ -1,0 +1,82 @@
+.background{
+    background-color: #000000;
+    height: 100%;
+    width: 100%;
+}
+
+.king{
+    height: 300px;
+    width: auto;
+    position: absolute; left: 10%; top: 30px;
+}
+
+.logo{
+    height: 100px;
+    width: auto;
+    position: absolute; left: 50%; transform: translateX(-50%); top: 30px;
+}
+
+.box{
+    height: 300px;
+    width: auto;
+    position: absolute; left: 8.2%; top: 370px;
+}
+
+.score-box{
+    height: 300px;
+    width: auto;
+    position: absolute; right: 8.2%; top: 360px;
+}
+
+.score-list{
+    position: absolute; right: 10%; top: 370px;
+    color: white;
+}
+
+.play-box{
+    height: 470px;
+    width: 800px;
+    position: absolute; left: 50%; transform: translateX(-50%); top: 190px;
+}
+
+.consonant{
+    background-color: white;
+    height: 50px;
+    width: 200px;
+    position: absolute; left: 50%; transform: translateX(-50%); top: 210px;
+    color: black;
+}
+
+.bubble{
+    height: 95px;
+    width: auto;
+    position: absolute; left: 18%; top: 70px;
+}
+
+#consonant{
+    color: black;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute; left: 50%; transform: translateX(-50%); top: 220px;
+}
+
+#rest-time{
+    color: white;
+    position: absolute; right: 15%; top: 330px;
+}
+
+#timer{
+    color: white;
+    position: absolute; right: 13%; top: 330px;
+}
+
+#wordBox{
+    border: 0px;
+    height: 40px;
+    width: 180px;
+    background-color: #000000;
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute; left: 50%; transform: translateX(-50%); bottom: 50px;
+}
