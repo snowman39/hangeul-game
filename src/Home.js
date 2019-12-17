@@ -25,40 +25,44 @@ export default function Home() {
         document.getElementsByClassName('enter-room')[0].style.display = "block";
         document.getElementsByClassName('new-room')[0].style.display = "block";
     }
+
+
+
+
+
+    
     const onLogin = (e) => {
         e.preventDefault();
         if (!name) {
           return alert('별명을 입력하세요.');
         }
-        firestore.collection('users').add({user:name})
-            .then(res=>{
-                localStorage.setItem('uid', res.id);
-                firestore.collection('users').get()
-                    .then(docs => {
-                        docs.forEach(doc => {
-                            if(doc.id === res.id) localStorage.setItem('userName', doc.data().user);
-                            console.log("log in changed");
-                            setLogin(1);
-                        })
-                    })
+
+        firestore.collection('users').doc(name).get()
+        .then(function(doc){
+            if(doc.exists)  localStorage.setItem('uid', user);
+            else{
+                firestore.collection('users').doc(name).set({
+                user: name,
+                best_score: 0
+                })}
+            })
+            .catch(function(error){
+                return alert(error);
             })
     }
+
     const onEnter = (e) => {
         e.preventDefault();
         if (!code)  return alert('암호를 입력하세요.');
         let roomRef = firestore.collection('rooms').doc(code);
-        
         roomRef.get().then(function(doc) {
             if(doc.exists) {
                 let users_local = doc.data().users;                             //users 목록을 users_local로 받아옴
                 let found = false;
                 users_local.forEach(function(user){
-                    if(user.user === localStorage.getItem('userName')) {
-                     console.log("있네 있어");
-                     console.log(user.user) ;  
-                     found = true;
-                    }
+                    if(user.user === localStorage.getItem('userName'))      found = true;
                 })                                                             //users_local 안에 이미 이 사람이 존재하는지 존재하지 않는지 확인(found로)
+        
                 if(!found)                                                      //새로온 유저라면
                 {
                 users_local = users_local.concat([{user: localStorage.getItem('userName'), score_thisgame: 0}]);       //users를 새로 update
@@ -68,6 +72,7 @@ export default function Home() {
                         how_many: doc.data().how_many + 1
                     }
                         ).then(function() {
+                        console.log(`${code}방에 입장하셨씁니다`);
                         console.log(doc.data().users);
                         console.log("how many is", doc.data().how_many);                            //그냥 콘솔 확인하려구 찍어놓음. 지울 예정
                         })
@@ -87,6 +92,7 @@ export default function Home() {
 
         
     }
+
     const onNew = (e) => {
         e.preventDefault();
         if(! code)  return alert('암호를 입력하세요.');
