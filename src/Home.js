@@ -70,7 +70,6 @@ export default function Home() {
                         ).then(function() {
                         console.log(doc.data().users);
                         console.log("how many is", doc.data().how_many);                            //그냥 콘솔 확인하려구 찍어놓음. 지울 예정
-                        window.open("localhost:3000/room");
                         })
                         .catch(function(error){
                             return alert("단어 입력에 실패했어요!" + error)
