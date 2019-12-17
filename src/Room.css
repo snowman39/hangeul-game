@@ -96,6 +96,19 @@ body{
     z-index: 1000;
 }
 
+#not-ready{
+    border: 0px;
+    height: 6%;
+    width: 16%;
+    background-color: #000000;
+    color: white;
+    font-size: 150%;
+    font-weight: bold;
+    position: absolute; left: 52%; transform: translateX(-50%); bottom: 8%;
+    text-align: center;
+    z-index: 1000;
+}
+
 .button-text4{
     height: 6.5%;
     width: 150px;
