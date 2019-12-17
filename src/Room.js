@@ -15,7 +15,8 @@ const APP_KEY = "80BDA3A34160D126F3FB4094CBE073EF"
 export default function Rank() {
     const [word, setWord] = useState(null);
     const [ready, setReady] = useState(localStorage.getItem('ready') ? 1:0);
-    const convert = require('xml-js');
+    const [allReady, setAllReady] = useState(localStorage.getItem('start')? 1:0);
+    const convert = require('xml-js');;
     const timer = (sec) => {
         let timer = document.getElementById("timer")
         timer.innerHTML = sec
@@ -73,6 +74,7 @@ export default function Rank() {
         }
         return a;
     }
+    console.log(allReady);
     useEffect(() => {
         setInterval(()=>{
             let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
@@ -88,15 +90,21 @@ export default function Rank() {
                             users: users_local,
                             how_many: docs.data().how_many,
                             is_playing: true,
-                            round: 0
+                            round: 1
                         }).then(() => {
-                            randomChosung(2);
-                            timer(60);
+                            setAllReady(1);
+                            localStorage.setItem('start', '1');
+                        }).catch((err) =>{
+                            return alert(err);
                         })
                 }
             })
         },100);
-    }) // ,[] 지워봤더니 괜찮은 것 같아서 냅둠
+    }, [])
+    if(allReady) {
+        randomChosung(2);
+        timer(60);
+    } //이거 암것도 안해도 두 번씩 실행되는데 이유좀 알려주세요 & 입력할 때 마다 초성 바뀜 ㅋㅋㅋㅋㅋㅋ, localstorage 'start'로 처리해도 될 것 같은데 뭔가 오류났었어서 보류
     const checkChosung = (str) => {
         const cho = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
         let result = "";
@@ -169,14 +177,14 @@ export default function Rank() {
             </div>
             <img src={playBox} className="play-box" alt="게임판"/>
             <div className="consonant"></div>
-            {ready === 0 &&
+            {allReady === 0 & ready === 0 &&
                 <button id="ready" onClick={onReady}>
                     <div className="button-text4">
                         준비하기!
                     </div>
                 </button>
             }
-            {ready > 0 &&
+            {allReady === 0 & ready > 0 &&
                 <button id="not-ready" onClick={onNotReady}>
                     <div className="button-text4">
                         준비 해제!
@@ -186,10 +194,12 @@ export default function Rank() {
             <span id="consonant"></span> 
             <span id="rest-time">남은 시간:</span>
             <span id="timer"></span>
-            <form onSubmit={checkWord}>
-                <label> 단어를 입력하세요: </label> 
-                <input type="text" id="wordBox" placeholder="단어 입력.." onChange={(e) => {setWord(e.target.value)}} />
-            </form>
+            {allReady > 0 &&
+                <form onSubmit={checkWord}>
+                    <label> 단어를 입력하세요: </label> 
+                    <input type="text" id="wordBox" placeholder="단어 입력.." onChange={(e) => {setWord(e.target.value)}} />
+                </form>
+            }
             <img src={scoreBox} className="score-box" alt="점수판"/>
             <div className="score-list">
                     뿌꾸뿌꾸: 2560점
