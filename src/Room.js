@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 // import { Link } from 'react-router-dom';
-import logo from './Logo.png';
-import sejong from './Sejong.png';
-import box from './HelpBox.png';
-import scoreBox from './ScoreBox.png';
-import playBox from './PlayBox.png';
-import bubble from './WordBubble.png';
+import logo from './images/Logo.png';
+import sejong from './images/Sejong.png';
+import box from './images/HelpBox.png';
+import scoreBox from './images/ScoreBox.png';
+import playBox from './images/PlayBox.png';
+import bubble from './images/WordBubble.png';
 import axios from 'axios'
 import './Room.css';
 
@@ -13,8 +13,7 @@ const APP_KEY = "80BDA3A34160D126F3FB4094CBE073EF"
 
 export default function Rank() {
     const [word, setWord] = useState(null);
-      const convert = require('xml-js');
-
+    const convert = require('xml-js');
     const timer = (sec) => {
         let timer = document.getElementById("timer")
         timer.innerHTML = sec
@@ -22,7 +21,6 @@ export default function Rank() {
         timer.innerHTML -= 1;
         }, 1000)
     }
-
     const checkWord = (e) => {
         e.preventDefault(); 
         document.getElementById("wordBox").value = ""
@@ -59,7 +57,6 @@ export default function Rank() {
         console.log("자음 불일치!") 
         }
     }
-
     const randomChosung = (n) => {
         const consonantList = ["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ", "ㅅ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
         const shuffleConsonants = shuffle(consonantList);
@@ -67,7 +64,6 @@ export default function Rank() {
         const consonants = shuffleConsonants.slice(0, n).join("")
         document.getElementById('consonant').innerHTML = consonants
     }
-
     const shuffle = (a) => {
         for (let i = a.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -75,13 +71,11 @@ export default function Rank() {
         }
         return a;
     }
-
     useEffect(() => {
         console.log("set new chosung")
         randomChosung(2)  
         timer(60)
     }, [])
-
     const checkChosung = (str) => {
         const cho = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
         let result = "";
@@ -91,7 +85,6 @@ export default function Rank() {
         }
         return result;
     }
-
     return (
         <div className="background">  
           <div>

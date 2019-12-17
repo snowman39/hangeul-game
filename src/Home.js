@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import sejong from './Sejong.png';
-import logo from './MainLogo.png';
-import bottom from './Bottom.png';
-import light from './Light.png';
-import arrow from './Arrow.png';
+import sejong from './images/Sejong.png';
+import logo from './images/MainLogo.png';
+import bottom from './images/Bottom.png';
+import light from './images/Light.png';
+import arrow from './images/Arrow.png';
 import './Home.css';
 
 import { firestore } from "./Firebase";
@@ -16,7 +16,7 @@ export default function Home() {
     const onStart = (e) => {
         e.preventDefault();
         document.getElementById('start').style.display = "none";
-        document.getElementsByClassName('login-field')[0].style.display = "block";
+        document.getElementsByClassName('login')[0].style.display = "block";
     };
     const onPlay = (e) => {
         e.preventDefault();
@@ -31,10 +31,12 @@ export default function Home() {
         .then((doc) => {
             if(doc.exists) return alert('이미 있는 별명입니다.');
             else{
-                firestore.collection('users').doc(name).set({
-                user: name,
-                best_score: 0
-                })}
+                firestore.collection('users').doc(name).set(
+                    {
+                    user: name,
+                    best_score: 0
+                    }
+                )}
                 localStorage.setItem('uid', name);
                 setLogin(1);
         })
@@ -99,77 +101,77 @@ export default function Home() {
             console.log(doc.data().users);
             console.log("how many is", doc.data().how_many);                            //그냥 콘솔 확인하려구 찍어놓음. 지울 예정
             })
-            .catch(function(error){
+            .catch((error) => {
                 return alert(error);
             })
     }
     return (
         <div className="background">  
             <div>
-            <div className ="rank">
-                <Link exact to="/Rank">
-                    <img src = {sejong} className="sejong" alt="명예의 전당"/>
-                </Link>
-            </div>
-            <div>
-                <img src={logo} className="main-logo" alt="로고"/>
-            </div>
-            <div>
-                <img src={bottom} className="bottom" alt="바닥"/>
-            </div>
-            <div>
-                <img src={light} className="light1" alt="빛"/>
-                <img src={light} className="light2" alt="빛"/>
-                <img src={light} className="light3" alt="빛"/>
-                <img src={light} className="light4" alt="빛"/>
-                <img src={light} className="light5" alt="빛"/>
-            </div>
-            <div>
-                {login === 0 &&
-                    <button id="start" alt="시작" onClick={onStart}>
-                        <div className="button-text">
-                            동전 넣기
-                        </div>
-                        <img src={arrow} className="arrow" alt="화살표"/>
+                <div>
+                    <Link exact to="/Rank">
+                        <img src = {sejong} className="sejong" alt="명예의 전당"/>
+                    </Link>
+                </div>
+                <div>
+                    <img src={logo} className="main-logo" alt="로고"/>
+                </div>
+                <div>
+                    <img src={bottom} className="bottom" alt="바닥"/>
+                </div>
+                <div>
+                    <img src={light} className="light1" alt="빛"/>
+                    <img src={light} className="light2" alt="빛"/>
+                    <img src={light} className="light3" alt="빛"/>
+                    <img src={light} className="light4" alt="빛"/>
+                    <img src={light} className="light5" alt="빛"/>
+                </div>
+                <div>
+                    {login === 0 &&
+                        <button id="start" alt="시작" onClick={onStart}>
+                            <div className="button-text">
+                                동전 넣기
+                            </div>
+                            <img src={arrow} className="arrow" alt="화살표"/>
+                        </button>
+                    }
+                    {login === 0 &&
+                    <button className="login">
+                        <form onSubmit={onLogin}>
+                            <input type="text" name="name" placeholder="별명 입력.." onChange={(e) => setName(e.target.value)} className="login-input"/>
+                            <input type="image" src={arrow} alt="로그인" className="arrow"/>
+                        </form>
                     </button>
-                }
-                {login === 0 &&
-                <button className="login-field">
-                    <form onSubmit={onLogin}>
-                        <input type="text" name="name" placeholder="별명 입력.." onChange={(e) => setName(e.target.value)} className="login"/>
-                        <input type="image" src={arrow} alt="로그인" className="arrow"/>
-                    </form>
-                </button>
-                }
-                {login > 0 &&
-                    <button id="play" onClick={onPlay}>
-                        <div className="button-text2">
-                            방 들어가기
-                        </div>
-                        <img src={arrow} className="arrow" alt="화살표"/>
-                    </button>
-                }
-                {login > 0 &&
-                    <div>
-                        <button className="enter-room">
-                            <div className="button-text3">기존 방</div>
-                                <form onSubmit={onEnter}>
-                                    <input type="text" name="code" placeholder="암호.." onChange={(e) => setCode(e.target.value)} className="enter">
-                                    </input>
+                    }
+                    {login > 0 &&
+                        <button id="play" onClick={onPlay}>
+                            <div className="button-text2">
+                                방 들어가기
+                            </div>
+                            <img src={arrow} className="arrow" alt="화살표"/>
+                        </button>
+                    }
+                    {login > 0 &&
+                        <div>
+                            <button className="enter-room">
+                                <div className="button-text3">기존 방</div>
+                                    <form onSubmit={onEnter}>
+                                        <input type="text" name="code" placeholder="암호.." onChange={(e) => setCode(e.target.value)} className="enter">
+                                        </input>
+                                        <input type="image" src={arrow} alt="들어가기" className="arrow"/>
+                                    </form>
+                            </button>
+                            <button className="new-room">
+                                <div className="button-text3">새로운 방</div>
+                                <form onSubmit={onNew}>
+                                    <input type="text" name="code" placeholder="암호.." onChange={(e) => setCode(e.target.value)} className="new"/>
                                     <input type="image" src={arrow} alt="들어가기" className="arrow"/>
                                 </form>
-                        </button>
-                        <button className="new-room">
-                            <div className="button-text3">새로운 방</div>
-                            <form onSubmit={onNew}>
-                                <input type="text" name="code" placeholder="암호.." onChange={(e) => setCode(e.target.value)} className="new"/>
-                                <input type="image" src={arrow} alt="들어가기" className="arrow"/>
-                            </form>
-                            <img src={arrow} className="arrow" alt="만들기"/>
-                        </button>
-                    </div>
-                }
-            </div>
+                                <img src={arrow} className="arrow" alt="만들기"/>
+                            </button>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     );

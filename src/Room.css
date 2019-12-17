@@ -1,82 +1,84 @@
-.background{
-    background-color: #000000;
+body{
     height: 100%;
     width: 100%;
+    display: flex;
+    background-color: #000000;
 }
 
 .king{
-    height: 300px;
+    height: 67%;
     width: auto;
-    position: absolute; left: 10%; top: 30px;
+    position: absolute; left: 10%; top: 3%;
 }
 
 .logo{
-    height: 100px;
+    height: 38%;
     width: auto;
-    position: absolute; left: 50%; transform: translateX(-50%); top: 30px;
+    position: absolute; left: 50%; transform: translateX(-50%); top: 3%;
 }
 
 .box{
-    height: 300px;
+    height: 46.5%;
     width: auto;
-    position: absolute; left: 8.2%; top: 370px;
+    position: absolute; left: 8.2%; top: 50%;
 }
 
 .score-box{
-    height: 300px;
+    height: 45%;
     width: auto;
-    position: absolute; right: 8.2%; top: 360px;
+    position: absolute; right: 8.2%; top: 50%;
 }
 
 .score-list{
-    position: absolute; right: 10%; top: 370px;
+    position: absolute; right: 10%; top: 52%;
     color: white;
 }
 
 .play-box{
-    height: 470px;
-    width: 800px;
-    position: absolute; left: 50%; transform: translateX(-50%); top: 190px;
+    height: 73%;
+    width: 58%;
+    position: absolute; left: 50%; transform: translateX(-50%); top: 22%;
 }
 
 .consonant{
     background-color: white;
-    height: 50px;
-    width: 200px;
-    position: absolute; left: 50%; transform: translateX(-50%); top: 210px;
+    height: 8%;
+    width: 16%;
+    position: absolute; left: 50%; transform: translateX(-50%); top: 25%;
     color: black;
 }
 
 .bubble{
-    height: 95px;
+    height: 13%;
     width: auto;
-    position: absolute; left: 18%; top: 70px;
+    position: absolute; left: 18%; top: 7.5%;
 }
 
 #consonant{
     color: black;
-    font-size: 28px;
+    font-size: 180%;
     font-weight: bold;
-    position: absolute; left: 50%; transform: translateX(-50%); top: 220px;
+    position: absolute; left: 50%; transform: translateX(-50%); top: 26%;
 }
 
 #rest-time{
     color: white;
-    position: absolute; right: 15%; top: 330px;
+    position: absolute; right: 15%; top: 46%;
 }
 
 #timer{
     color: white;
-    position: absolute; right: 13%; top: 330px;
+    position: absolute; right: 12%; top: 46%;
 }
 
 #wordBox{
     border: 0px;
-    height: 40px;
-    width: 180px;
+    height: 6%;
+    width: 16%;
     background-color: #000000;
     color: white;
-    font-size: 28px;
+    font-size: 150%;
     font-weight: bold;
-    position: absolute; left: 50%; transform: translateX(-50%); bottom: 50px;
+    position: absolute; left: 50%; transform: translateX(-50%); bottom: 7%;
+    text-align: center;
 }
