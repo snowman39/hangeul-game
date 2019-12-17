@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
 // import { Link } from 'react-router-dom';
-import logo from './Logo.png';
-import sejong from './Sejong.png';
-import box from './HelpBox.png';
-import scoreBox from './ScoreBox.png';
-import playBox from './PlayBox.png';
-import bubble from './WordBubble.png';
+import logo from './images/Logo.png';
+import sejong from './images/Sejong.png';
+import box from './images/HelpBox.png';
+import scoreBox from './images/ScoreBox.png';
+import playBox from './images/PlayBox.png';
+import bubble from './images/WordBubble.png';
 import axios from 'axios'
 import './Room.css';
+import { firestore } from "./Firebase";
 
 const APP_KEY = "80BDA3A34160D126F3FB4094CBE073EF"
 
 export default function Rank() {
     const [word, setWord] = useState(null);
-      const convert = require('xml-js');
-
+    const [ready, setReady] = useState(localStorage.getItem('ready') ? 1:0);
+    const [allReady, setAllReady] = useState(localStorage.getItem('start')? 1:0);
+    const convert = require('xml-js');;
     const timer = (sec) => {
         let timer = document.getElementById("timer")
         timer.innerHTML = sec
@@ -22,7 +24,6 @@ export default function Rank() {
         timer.innerHTML -= 1;
         }, 1000)
     }
-
     const checkWord = (e) => {
         e.preventDefault(); 
         document.getElementById("wordBox").value = ""
@@ -59,7 +60,6 @@ export default function Rank() {
         console.log("자음 불일치!") 
         }
     }
-
     const randomChosung = (n) => {
         const consonantList = ["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ", "ㅅ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
         const shuffleConsonants = shuffle(consonantList);
@@ -67,7 +67,6 @@ export default function Rank() {
         const consonants = shuffleConsonants.slice(0, n).join("")
         document.getElementById('consonant').innerHTML = consonants
     }
-
     const shuffle = (a) => {
         for (let i = a.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -75,13 +74,37 @@ export default function Rank() {
         }
         return a;
     }
-
+    console.log(allReady);
     useEffect(() => {
-        console.log("set new chosung")
-        randomChosung(2)  
-        timer(60)
+        setInterval(()=>{
+            let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
+            roomRef.get().then((docs) => {
+                let users_local = docs.data().users
+                let readyCount = 0;
+                users_local.forEach((user) => {
+                    if(user.is_ready) readyCount = readyCount+1;
+                })
+                if(readyCount === docs.data().how_many) {
+                    roomRef.set(
+                        {
+                            users: users_local,
+                            how_many: docs.data().how_many,
+                            is_playing: true,
+                            round: 1
+                        }).then(() => {
+                            setAllReady(1);
+                            localStorage.setItem('start', '1');
+                        }).catch((err) =>{
+                            return alert(err);
+                        })
+                }
+            })
+        },100);
     }, [])
-
+    if(allReady) {
+        randomChosung(2);
+        timer(60);
+    } //이거 암것도 안해도 두 번씩 실행되는데 이유좀 알려주세요 & 입력할 때 마다 초성 바뀜 ㅋㅋㅋㅋㅋㅋ, localstorage 'start'로 처리해도 될 것 같은데 뭔가 오류났었어서 보류
     const checkChosung = (str) => {
         const cho = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
         let result = "";
@@ -91,7 +114,54 @@ export default function Rank() {
         }
         return result;
     }
-
+    const onReady = (e) => {
+        e.preventDefault();
+        let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
+        roomRef.get().then((docs) => {
+            let users_local = docs.data().users
+            users_local.forEach((user) => {
+                if(user.user === localStorage.getItem('uid'))  user.is_ready = true;
+            })
+            roomRef.set(
+                {
+                users: users_local,
+                how_many: docs.data().how_many,
+                is_playing: false,
+                round: 0
+                }).then(()=>{
+                    localStorage.setItem('ready', '1');
+                    setReady(1);
+                }).catch((err) => { 
+                    return alert(err);
+                })
+        }).catch((err) => {
+            return alert(err);
+        })
+    }
+    const onNotReady = (e) => {
+        e.preventDefault();
+        let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
+        roomRef.get().then((docs) => {
+            let users_local = docs.data().users
+            users_local.forEach((user) => {
+                if(user.user === localStorage.getItem('uid'))  user.is_ready = false;
+            })
+            roomRef.set(
+                {
+                users: users_local,
+                how_many: docs.data().how_many,
+                is_playing: false,
+                round: 0
+                }).then(()=>{
+                    localStorage.removeItem('ready');
+                    setReady(0);
+                }).catch((err) => { 
+                    return alert(err);
+                })
+        }).catch((err) => {
+            return alert(err);
+        })
+    }
     return (
         <div className="background">  
           <div>
@@ -107,13 +177,29 @@ export default function Rank() {
             </div>
             <img src={playBox} className="play-box" alt="게임판"/>
             <div className="consonant"></div>
+            {allReady === 0 & ready === 0 &&
+                <button id="ready" onClick={onReady}>
+                    <div className="button-text4">
+                        준비하기!
+                    </div>
+                </button>
+            }
+            {allReady === 0 & ready > 0 &&
+                <button id="not-ready" onClick={onNotReady}>
+                    <div className="button-text4">
+                        준비 해제!
+                    </div>
+                </button>
+            }
             <span id="consonant"></span> 
             <span id="rest-time">남은 시간:</span>
             <span id="timer"></span>
-            <form onSubmit={checkWord}>
-                <label> 단어를 입력하세요: </label> 
-                <input type="text" id="wordBox" placeholder="단어 입력.." onChange={(e) => {setWord(e.target.value)}} />
-            </form>
+            {allReady > 0 &&
+                <form onSubmit={checkWord}>
+                    <label> 단어를 입력하세요: </label> 
+                    <input type="text" id="wordBox" placeholder="단어 입력.." onChange={(e) => {setWord(e.target.value)}} />
+                </form>
+            }
             <img src={scoreBox} className="score-box" alt="점수판"/>
             <div className="score-list">
                     뿌꾸뿌꾸: 2560점
