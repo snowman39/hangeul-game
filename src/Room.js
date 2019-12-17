@@ -74,10 +74,29 @@ export default function Rank() {
         return a;
     }
     useEffect(() => {
-        console.log("set new chosung")
-        randomChosung(2)  
-        timer(60)
-    }, [])
+        setInterval(()=>{
+            let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
+            roomRef.get().then((docs) => {
+                let users_local = docs.data().users
+                let readyCount = 0;
+                users_local.forEach((user) => {
+                    if(user.is_ready) readyCount = readyCount+1;
+                })
+                if(readyCount === docs.data().how_many) {
+                    roomRef.set(
+                        {
+                            users: users_local,
+                            how_many: docs.data().how_many,
+                            is_playing: true,
+                            round: 0
+                        }).then(() => {
+                            randomChosung(2);
+                            timer(60);
+                        })
+                }
+            })
+        },100);
+    }) // ,[] 지워봤더니 괜찮은 것 같아서 냅둠
     const checkChosung = (str) => {
         const cho = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
         let result = "";
@@ -94,9 +113,19 @@ export default function Rank() {
             let users_local = docs.data().users
             users_local.forEach((user) => {
                 if(user.user === localStorage.getItem('uid'))  user.is_ready = true;
-            localStorage.setItem('ready', '1');
-            setReady(1);
             })
+            roomRef.set(
+                {
+                users: users_local,
+                how_many: docs.data().how_many,
+                is_playing: false,
+                round: 0
+                }).then(()=>{
+                    localStorage.setItem('ready', '1');
+                    setReady(1);
+                }).catch((err) => { 
+                    return alert(err);
+                })
         }).catch((err) => {
             return alert(err);
         })
@@ -108,9 +137,19 @@ export default function Rank() {
             let users_local = docs.data().users
             users_local.forEach((user) => {
                 if(user.user === localStorage.getItem('uid'))  user.is_ready = false;
-            localStorage.removeItem('ready');
-            setReady(0);
             })
+            roomRef.set(
+                {
+                users: users_local,
+                how_many: docs.data().how_many,
+                is_playing: false,
+                round: 0
+                }).then(()=>{
+                    localStorage.removeItem('ready');
+                    setReady(0);
+                }).catch((err) => { 
+                    return alert(err);
+                })
         }).catch((err) => {
             return alert(err);
         })
