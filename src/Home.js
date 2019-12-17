@@ -12,8 +12,7 @@ import { firestore } from "./Firebase";
 export default function Home() {
     const [name, setName] = useState(null);
     const [code, setCode] = useState(null);
-    const [login, setLogin] = useState(0);
-//    const [login, setLogin] = useState(localStorage.getItem('uid') ? 1:0);
+    const [login, setLogin] = useState(localStorage.getItem('uid') ? 1:0);
     const onStart = (e) => {
         e.preventDefault();
         document.getElementById('start').style.display = "none";
@@ -26,25 +25,20 @@ export default function Home() {
         document.getElementsByClassName('new-room')[0].style.display = "block";
     }
 
-
-
-
-
     
     const onLogin = (e) => {
         e.preventDefault();
-        if (!name) {
-          return alert('별명을 입력하세요.');
-        }
+        if (!name)  return alert('별명을 입력하세요.');
 
         firestore.collection('users').doc(name).get()
         .then(function(doc){
-            if(doc.exists)  localStorage.setItem('uid', user);
+            if(doc.exists)  localStorage.setItem('uid', name);
             else{
                 firestore.collection('users').doc(name).set({
                 user: name,
                 best_score: 0
                 })}
+                setLogin(1);
             })
             .catch(function(error){
                 return alert(error);
@@ -72,9 +66,6 @@ export default function Home() {
                         how_many: doc.data().how_many + 1
                     }
                         ).then(function() {
-                        console.log(`${code}방에 입장하셨씁니다`);
-                        console.log(doc.data().users);
-                        console.log("how many is", doc.data().how_many);                            //그냥 콘솔 확인하려구 찍어놓음. 지울 예정
                         })
                         .catch(function(error){
                             return alert("단어 입력에 실패했어요!" + error)
@@ -85,6 +76,10 @@ export default function Home() {
             else {
                 return alert("Sorry, we don't have a room like that");
             }
+            console.log(`${code} 방에 입장하셨씁니다`);
+            console.log(doc.data().users);
+            console.log("how many is", doc.data().how_many);                            //그냥 콘솔 확인하려구 찍어놓음. 지울 예정
+
             })
             .catch(function(error){
                 return alert(error);
@@ -120,7 +115,6 @@ export default function Home() {
 
 
     }
-    console.log("log in doesn't have a problem", login);
     return (
         <div className="background">  
             <div>
