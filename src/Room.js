@@ -17,14 +17,14 @@ export default function Rank() {
     const [ready, setReady] = useState(localStorage.getItem('ready') ? 1:0);
     const [allReady, setAllReady] = useState(localStorage.getItem('start')? 1:0);
     const convert = require('xml-js');;
-    const timer = (sec) => {
+    // const timer = (sec) => {
 
-        let timer = document.getElementById("timer")
-        timer.innerHTML = sec
-        setInterval(() => {      
-        timer.innerHTML -= 1;
-        }, 1000)
-    }
+    //     let timer = document.getElementById("timer")
+    //     timer.innerHTML = sec
+    //     setInterval(() => {      
+    //     timer.innerHTML -= 1;
+    //     }, 1000)
+    // }
     const checkWord = (e) => {
         e.preventDefault(); 
         document.getElementById("wordBox").value = ""
@@ -61,13 +61,13 @@ export default function Rank() {
         console.log("자음 불일치!") 
         }
     }
-    const randomChosung = (n) => {
-        const consonantList = ["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ", "ㅅ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
-        const shuffleConsonants = shuffle(consonantList);
-        console.log(shuffleConsonants);
-        const consonants = shuffleConsonants.slice(0, n).join("")
-        document.getElementById('consonant').innerHTML = consonants
-    }
+    // const randomChosung = (n) => {
+    //     const consonantList = ["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ", "ㅅ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+    //     const shuffleConsonants = shuffle(consonantList);
+    //     console.log(shuffleConsonants);
+    //     const consonants = shuffleConsonants.slice(0, n).join("")
+    //     document.getElementById('consonant').innerHTML = consonants
+    // }
     const shuffle = (a) => {
         for (let i = a.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -86,22 +86,11 @@ export default function Rank() {
                     if(user.is_ready) readyCount = readyCount+1;
                 })
                 if(readyCount === docs.data().how_many) {
-                    roomRef.set(
-                        {
-                            users: users_local,
-                            how_many: docs.data().how_many,
-                            is_playing: true,
-                            round: 1,
-                            consonants: []
-                        }).then(() => {
-                            setAllReady(1);
-                            localStorage.setItem('start', '1');
-                        }).catch((err) =>{
-                            return alert(err);
-                        })
+                    setAllReady(1);
+                    localStorage.setItem('start', '1');
                 }
             })
-        },1000);
+        },10000000);
     }, [])
     if(allReady) {
         
@@ -128,8 +117,7 @@ export default function Rank() {
                 users: users_local,
                 how_many: docs.data().how_many,
                 is_playing: false,
-                round: 0,
-                consonants: []
+                round_control: [{round_no: 0}, {given_chosung: ""}, {answers: []}, {time_started: 0}]
                 }).then(()=>{
                     localStorage.setItem('ready', '1');
                     setReady(1);
@@ -153,8 +141,7 @@ export default function Rank() {
                 users: users_local,
                 how_many: docs.data().how_many,
                 is_playing: false,
-                round: 0,
-                consonants: []
+                round_control: [{round_no: 0}, {given_chosung: ""}, {answers: []}, {time_started: 0}]
                 }).then(()=>{
                     localStorage.removeItem('ready');
                     setReady(0);
@@ -167,22 +154,16 @@ export default function Rank() {
     }
     const onGameStart = (e) => {
         e.preventDefault();
-        let consonantArr = [];
-        for(let i=0; i<5; i++) {
-            const consonantList = ["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ", "ㅅ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
-            const shuffleConsonants = shuffle(consonantList);
-            consonantArr.push(shuffleConsonants.slice(0, 2).join(""));
-        }
-        console.log(consonantArr);
+        const consonantList = ["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ", "ㅅ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+        const shuffleConsonants = shuffle(consonantList);
         let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
         roomRef.get().then((docs) => {
             roomRef.set(
                 {
                 users: docs.data().users,
                 how_many: docs.data().how_many,
-                is_playing: false,
-                round: 0,
-                consonants: consonantArr
+                is_playing: true,
+                round_control: [{round_no: 1}, {given_chosung: shuffleConsonants.slice(0, 2).join("")}, {answers: []}, {time_started: Date.now()}]
                 })
         }).catch((err)=>{
             return alert(err);

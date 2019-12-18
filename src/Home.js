@@ -55,8 +55,7 @@ export default function Home() {
                         users: [{user: localStorage.getItem('uid'), score_thisgame: 0, is_ready: false, is_master: true}],
                         how_many: 1,
                         is_playing: false,
-                        round: 0,
-                        consonants: []
+                        round_control: [{round_no: 0}, {given_chosung: ""}, {answers: []}, {time_started: 0}]
                     },
                     { merge: true },
                 )
@@ -91,7 +90,7 @@ export default function Home() {
                         users: users_local,
                         how_many: doc.data().how_many + 1,
                         is_playing: false,
-                        round: 0
+                        round_control: [{round_no: 0}, {given_chosung: ""}, {answers: []}, {time_started: 0}]
                     }).then(() => {
                         localStorage.setItem('code', code);
                         firestore.collection('rooms').doc(code).get()
