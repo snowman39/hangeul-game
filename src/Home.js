@@ -84,22 +84,26 @@ export default function Home() {
                 })                                                              //users_local 안에 이미 이 사람이 존재하는지 존재하지 않는지 확인(found로)
                 if(!found)                                                      //새로온 유저라면
                 {
-                users_local = users_local.concat([{user: localStorage.getItem('uid'), score_thisgame: 0, is_ready: false, is_master: false}]);       //users를 새로 update
-                roomRef.set(
-                    {
-                        users: users_local,
-                        how_many: doc.data().how_many + 1,
-                        is_playing: false,
-                        round_control: [{round_no: 0}, {given_chosung: ""}, {answers: []}, {time_started: 0}]
-                    }).then(() => {
-                        localStorage.setItem('code', code);
-                        firestore.collection('rooms').doc(code).get()
-                        .then((doc)=>{
-                            if(doc.exists) window.location = `Room/${localStorage.getItem('code')}`;
-                        })
-                    }).catch((err) => {
-                        return alert(err);
-                    });
+                    if(doc.data().is_playing) {
+                        return alert("이미 플레이 중인 방입니다.")
+                    } else {
+                    users_local = users_local.concat([{user: localStorage.getItem('uid'), score_thisgame: 0, is_ready: false, is_master: false}]);       //users를 새로 update
+                    roomRef.set(
+                        {
+                            users: users_local,
+                            how_many: doc.data().how_many + 1,
+                            is_playing: false,
+                            round_control: [{round_no: 0}, {given_chosung: ""}, {answers: []}, {time_started: 0}]
+                        }).then(() => {
+                            localStorage.setItem('code', code);
+                            firestore.collection('rooms').doc(code).get()
+                            .then((doc)=>{
+                                if(doc.exists) window.location = `Room/${localStorage.getItem('code')}`;
+                            })
+                        }).catch((err) => {
+                            return alert(err);
+                        });
+                    }
                 }
             }
             else {

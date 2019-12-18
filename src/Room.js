@@ -31,8 +31,9 @@ export default function Room() {
         document.getElementById("wordBox").value = ""
         let inputConsonant = checkChosung(word);
         let consonant = document.getElementById('consonant').innerHTML
+        let checkAnswer = document.querySelector('.checkAnswer')
         if (inputConsonant === consonant) {
-            document.querySelector('.checkAnswer').innerHTML = "자음 일치!"
+            checkAnswer.innerHTML = "자음 일치!"
             setTimeout(() => {
                 document.querySelector('.checkAnswer').style.display = 'none';
             }, 1500)
@@ -45,36 +46,36 @@ export default function Room() {
         })
         .then(response => {
             if (response.channel.item) {
-            console.log("PASS");
-            let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
-            roomRef.get().then((docs)=>{
-                let roundInfo = docs.data().round_control;
-                if (roundInfo[2].answers.includes(word)) {
-                    console.log("근데 이미 있는 단어지롱~")
+                checkAnswer.innerHTML = "PASS"
+                console.log("PASS");
+                let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
+                roomRef.get().then((docs)=>{
+                    let roundInfo = docs.data().round_control;
+                    if (roundInfo[2].answers.includes(word)) {
+                        console.log("근데 이미 있는 단어지롱~")
+                    } else {
+                    roundInfo[2].answers.push(word);
+                    }
+                    roomRef.set(
+                        {
+                            users: docs.data().users,
+                            how_many: docs.data().how_many,
+                            is_playing: true,
+                            round_control: [roundInfo[0], roundInfo[1], roundInfo[2], roundInfo[3]]  
+                        })
+                })
+                if ((response.channel.item).length > 1) {
+                    if ((response.channel.item[0].sense).length > 1) {
+                    console.log(response.channel.item[0].sense[0].definition._text)
+                    }
+                    else {
+                    console.log(response.channel.item[0].sense.definition._text)
+                    }
+                } else if ((response.channel.item).length === 1) {
+                    console.log(response.channel.item.sense.definition._text)
                 } else {
-                roundInfo[2].answers.push(word);
+                    console.log("오, 이런 어려운 단어도 알다니! 아주 칭찬해~")
                 }
-                roomRef.set(
-                    {
-                        users: docs.data().users,
-                        how_many: docs.data().how_many,
-                        is_playing: true,
-                        round_control: [roundInfo[0], roundInfo[1], roundInfo[2], roundInfo[3]]  
-                    })
-                
-            })
-            if ((response.channel.item).length > 1) {
-                if ((response.channel.item[0].sense).length > 1) {
-                console.log(response.channel.item[0].sense[0].definition._text)
-                }
-                else {
-                console.log(response.channel.item[0].sense.definition._text)
-                }
-            } else if ((response.channel.item).length === 1) {
-                console.log(response.channel.item.sense.definition._text)
-            } else {
-                console.log("오, 이런 어려운 단어도 알다니! 아주 칭찬해~")
-            }
             
             } else {
             console.log("WRONG")
@@ -122,17 +123,22 @@ export default function Room() {
         },1000);
     }, [])
 
-    const proposeChosung = () => {
+    const proposeChosung = () => { // 처음 들어간 방은 초성이 바로 뜨지 않는 문제
         let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
         roomRef.get().then((docs) => {
             if(docs.data().is_playing) { 
                 setStart(1);
-                localStorage.setItem('start', '1');
-                document.getElementById('consonant').innerHTML = docs.data().round_control[1].given_chosung;
-                console.log(docs.data().round_control[1].given_chosung);
-            }
+                localStorage.setItem('start', '1'); 
+            }  
         })
+        .then(
+            roomRef.get().then((docs) => {
+                document.getElementById('consonant').innerHTML = docs.data().round_control[1].given_chosung;
+                console.log(docs.data().round_control[1].given_chosung) 
+            })
+        )
     }
+
     const checkChosung = (str) => {
         const cho = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
         let result = "";
