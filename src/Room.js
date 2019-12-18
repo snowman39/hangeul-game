@@ -86,13 +86,8 @@ export default function Room() {
         console.log("자음 불일치!") 
         }
     }
-    // const randomChosung = (n) => {
-    //     const consonantList = ["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ", "ㅅ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
-    //     const shuffleConsonants = shuffle(consonantList);
-    //     console.log(shuffleConsonants);
-    //     const consonants = shuffleConsonants.slice(0, n).join("")
-    //     document.getElementById('consonant').innerHTML = consonants
-    // }
+
+    
     const shuffle = (a) => {
         for (let i = a.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -220,7 +215,69 @@ export default function Room() {
         
     }
 
+
     
+    const onNextRound = (e) => {
+        e.preventDefault();
+        console.log(localStorage.getItem('uindex'));
+        const consonantList = ["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ", "ㅅ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+        const shuffleConsonants = shuffle(consonantList);
+        let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
+        roomRef.get().then((docs) => {
+            let nextRoundState = docs.data().round_control;
+            nextRoundState[0].round_no ++;
+            nextRoundState[1].given_chosung = shuffleConsonants.slice(0, 2).join("");
+            nextRoundState[2].answers=[];
+            nextRoundState[3].time_started=Date.now();
+            roomRef.set(
+                {
+                users: docs.data().users,
+                how_many: docs.data().how_many,
+                is_playing: true,
+                round_control : nextRoundState
+                })
+        })
+        .then(proposeChosung())
+        .catch((err)=>{
+            return alert(err);
+        })
+        
+    }
+
+
+
+
+
+    const onGameDone = (e) => {
+        e.preventDefault();
+        let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
+
+        roomRef.get().then((docs) => {
+            console.log(' users는 다 있나?', docs.data().users)
+            docs.data().users.forEach((e) => {
+                let userRef = firestore.collection('users').doc(e.user);
+
+                userRef.get().then((user) => {
+                    if(e.score_thisgame > user.data().best_score)
+                    {
+                    userRef.set(
+                        {best_score: e.score_thisgame,
+                        user: user.data().user
+                        })
+                    console.log(e.user, "의 맥스값이 변해용");
+                    }
+                })        
+         })
+        })
+        .catch((err)=>{
+            return alert(err);
+        })
+        
+}
+
+
+
+
 
     // const scoreRecord = () => {
     //     // let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
@@ -274,6 +331,15 @@ export default function Room() {
                     게임 시작!
                 </button>
             }
+
+                <button id="nextround" onClick={onNextRound}>
+                    담라!!
+                </button>
+
+                <button id="gamedone" onClick={onGameDone}>
+                    종료
+                </button>
+
             {start > 0 &&
                 <form onSubmit={checkWord}>
                     <label> 단어를 입력하세요: </label> 
