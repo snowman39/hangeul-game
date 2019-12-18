@@ -48,6 +48,14 @@ body{
     color: black;
 }
 
+.checkAnswer{
+    /* background-color: black; */
+    height: 16%;
+    width: 16%;
+    position: absolute; left: 50%; transform: translateX(-50%); top: 25%;
+    color: lightgray;
+}
+
 .bubble{
     height: 13%;
     width: auto;

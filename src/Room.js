@@ -32,6 +32,10 @@ export default function Room() {
         let inputConsonant = checkChosung(word);
         let consonant = document.getElementById('consonant').innerHTML
         if (inputConsonant === consonant) {
+            document.querySelector('.checkAnswer').innerHTML = "자음 일치!"
+            setTimeout(() => {
+                document.querySelector('.checkAnswer').style.display = 'none';
+            }, 1500)
         console.log("자음 일치!") 
         axios.get(`https://cors-anywhere.herokuapp.com/https://krdict.korean.go.kr/api/search?certkey_no=1154&key=${APP_KEY}&type_search=search&method=WORD_INFO&part=word&q=${word}&sort=dict`, {
         })
@@ -45,7 +49,7 @@ export default function Room() {
             let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
             roomRef.get().then((docs)=>{
                 let roundInfo = docs.data().round_control;
-                roundInfo[2] = roundInfo[2].answers.concat([word]);
+                roundInfo[2].answers.push(word);
                 roomRef.set(
                     {
                         users: docs.data().users,
@@ -108,15 +112,21 @@ export default function Room() {
                     setAllReady(1);
                     localStorage.setItem('allReady', '1');
                 }
-                if(docs.data().is_playing) {
-                    setStart(1);
-                    localStorage.setItem('start', '1');
-                    document.getElementById('consonant').innerHTML = docs.data().round_control[1].given_chosung;
-                    console.log(docs.data().round_control[1].given_chosung);
-                }
             })
-        },1000000);
+        },1000);
     }, [])
+
+    const proposeChosung = () => {
+        let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
+        roomRef.get().then((docs) => {
+            if(docs.data().is_playing) { 
+                setStart(1);
+                localStorage.setItem('start', '1');
+                document.getElementById('consonant').innerHTML = docs.data().round_control[1].given_chosung;
+                console.log(docs.data().round_control[1].given_chosung);
+            }
+        })
+    }
     const checkChosung = (str) => {
         const cho = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
         let result = "";
@@ -187,7 +197,9 @@ export default function Room() {
                 is_playing: true,
                 round_control: [{round_no: 1}, {given_chosung: shuffleConsonants.slice(0, 2).join("")}, {answers: []}, {time_started: Date.now()}]
                 })
-        }).then(()=>{
+        })
+        .then(proposeChosung())
+        .then(() => {
             document.getElementById('game-start').style.display = "none";
             setStart(1);
             localStorage.setItem('start','1');
@@ -195,6 +207,7 @@ export default function Room() {
         .catch((err)=>{
             return alert(err);
         })
+        
     }
     
     // const scoreRecord = () => {
@@ -226,6 +239,7 @@ export default function Room() {
             </div>
             <img src={playBox} className="play-box" alt="게임판"/>
             <div className="consonant"></div>
+            <div className="checkAnswer"></div>
             {allReady === 0 & ready === 0 &&
                 <button id="ready" onClick={onReady}>
                     <div className="button-text4">
@@ -255,9 +269,7 @@ export default function Room() {
                 </form>
             }
             <img src={scoreBox} className="score-box" alt="점수판"/>
-            <div className="score-list">
-                    뿌꾸뿌꾸: 2560점
-            </div>
+            <div className="score-list"></div>
           </div>
       </div>
     )
