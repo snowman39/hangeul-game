@@ -18,6 +18,7 @@ export default function Rank() {
     const [allReady, setAllReady] = useState(localStorage.getItem('start')? 1:0);
     const convert = require('xml-js');;
     const timer = (sec) => {
+
         let timer = document.getElementById("timer")
         timer.innerHTML = sec
         setInterval(() => {      
@@ -79,7 +80,7 @@ export default function Rank() {
         setInterval(()=>{
             let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
             roomRef.get().then((docs) => {
-                let users_local = docs.data().users
+                let users_local = docs.data().users;
                 let readyCount = 0;
                 users_local.forEach((user) => {
                     if(user.is_ready) readyCount = readyCount+1;
@@ -90,7 +91,8 @@ export default function Rank() {
                             users: users_local,
                             how_many: docs.data().how_many,
                             is_playing: true,
-                            round: 1
+                            round: 1,
+                            consonants: []
                         }).then(() => {
                             setAllReady(1);
                             localStorage.setItem('start', '1');
@@ -99,11 +101,10 @@ export default function Rank() {
                         })
                 }
             })
-        },100);
+        },1000);
     }, [])
     if(allReady) {
-        randomChosung(2);
-        timer(60);
+        
     } //이거 암것도 안해도 두 번씩 실행되는데 이유좀 알려주세요 & 입력할 때 마다 초성 바뀜 ㅋㅋㅋㅋㅋㅋ, localstorage 'start'로 처리해도 될 것 같은데 뭔가 오류났었어서 보류
     const checkChosung = (str) => {
         const cho = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
@@ -127,7 +128,8 @@ export default function Rank() {
                 users: users_local,
                 how_many: docs.data().how_many,
                 is_playing: false,
-                round: 0
+                round: 0,
+                consonants: []
                 }).then(()=>{
                     localStorage.setItem('ready', '1');
                     setReady(1);
@@ -151,7 +153,8 @@ export default function Rank() {
                 users: users_local,
                 how_many: docs.data().how_many,
                 is_playing: false,
-                round: 0
+                round: 0,
+                consonants: []
                 }).then(()=>{
                     localStorage.removeItem('ready');
                     setReady(0);
@@ -159,6 +162,29 @@ export default function Rank() {
                     return alert(err);
                 })
         }).catch((err) => {
+            return alert(err);
+        })
+    }
+    const onGameStart = (e) => {
+        e.preventDefault();
+        let consonantArr = [];
+        for(let i=0; i<5; i++) {
+            const consonantList = ["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ", "ㅅ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+            const shuffleConsonants = shuffle(consonantList);
+            consonantArr.push(shuffleConsonants.slice(0, 2).join(""));
+        }
+        console.log(consonantArr);
+        let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
+        roomRef.get().then((docs) => {
+            roomRef.set(
+                {
+                users: docs.data().users,
+                how_many: docs.data().how_many,
+                is_playing: false,
+                round: 0,
+                consonants: consonantArr
+                })
+        }).catch((err)=>{
             return alert(err);
         })
     }
@@ -194,11 +220,17 @@ export default function Rank() {
             <span id="consonant"></span> 
             <span id="rest-time">남은 시간:</span>
             <span id="timer"></span>
-            {allReady > 0 &&
-                <form onSubmit={checkWord}>
-                    <label> 단어를 입력하세요: </label> 
-                    <input type="text" id="wordBox" placeholder="단어 입력.." onChange={(e) => {setWord(e.target.value)}} />
-                </form>
+            {allReady > 0 && localStorage.getItem('master') &&
+                <button id="game-start" onClick={onGameStart}>
+                    게임 시작!
+                </button>
+                // <form onSubmit={checkWord}>
+                //     <label> 단어를 입력하세요: </label> 
+                //     <input type="text" id="wordBox" placeholder="단어 입력.." onChange={(e) => {setWord(e.target.value)}} />
+                // </form>
+            }
+            {
+
             }
             <img src={scoreBox} className="score-box" alt="점수판"/>
             <div className="score-list">
