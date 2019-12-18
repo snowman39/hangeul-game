@@ -31,6 +31,7 @@ export default function Home() {
         .then((doc) => {
             if(doc.exists) return alert('이미 있는 별명입니다.');
             else{
+                console.log('여기까진 왔다!');
                 firestore.collection('users').doc(name).set(
                     {
                     user: name,
@@ -52,16 +53,17 @@ export default function Home() {
             else  {
                 firestore.collection('rooms').doc(code).set(
                     {
-                        users: [{user: localStorage.getItem('uid'), score_thisgame: 0, is_ready: false}],
+                        users: [{user: localStorage.getItem('uid'), score_thisgame: 0, is_ready: false, is_master: true}],
                         how_many: 1,
                         is_playing: false,
-                        round: 0
+                        round_control: [{round_no: 0}, {given_chosung: ""}, {answers: []}, {time_started: 0}]
                     },
                     { merge: true },
                 )
             }
         }).then(()=> {
             localStorage.setItem('code', code);
+            localStorage.setItem('master', 1);
             firestore.collection('rooms').doc(code).get()
             .then((doc)=>{
                 if(doc.exists) window.location = `Room/${localStorage.getItem('code')}`;
@@ -83,13 +85,13 @@ export default function Home() {
                 })                                                              //users_local 안에 이미 이 사람이 존재하는지 존재하지 않는지 확인(found로)
                 if(!found)                                                      //새로온 유저라면
                 {
-                users_local = users_local.concat([{user: localStorage.getItem('uid'), score_thisgame: 0, is_ready: false}]);       //users를 새로 update
+                users_local = users_local.concat([{user: localStorage.getItem('uid'), score_thisgame: 0, is_ready: false, is_master: false}]);       //users를 새로 update
                 roomRef.set(
                     {
                         users: users_local,
                         how_many: doc.data().how_many + 1,
                         is_playing: false,
-                        round: 0
+                        round_control: [{round_no: 0}, {given_chosung: ""}, {answers: []}, {time_started: 0}]
                     }).then(() => {
                         localStorage.setItem('code', code);
                         firestore.collection('rooms').doc(code).get()
