@@ -267,7 +267,10 @@ export default function Room() {
         const shuffleConsonants = shuffle(consonantList);
         let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
         roomRef.get().then((docs) => {
-            document.getElementsByClassName('answers').remove();
+            let answerNum = document.getElementsByClassName('answers').length;
+            for(let i =0; i<answerNum; i++){
+                document.getElementsByClassName('answers')[i].style.display = "none";
+            }
             let nextRoundState = docs.data().round_control;
             nextRoundState[0].round_no ++;
             nextRoundState[1].given_chosung = shuffleConsonants.slice(0, 2).join("");
