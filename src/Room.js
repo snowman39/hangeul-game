@@ -54,10 +54,8 @@ export default function Room() {
                 let roundInfo = docs.data().round_control;
                 roundInfo[2].answers.push(word);
                 let ingameUserinfo = docs.data().users;
-                console.log(ingameUserinfo);
-                console.log(ingameUserinfo[uindex].score_thisgame)
-                ingameUserinfo[uindex].score_thisgame = ingameUserinfo[uindex].score_thisgame + Math.floor(10000000 / (Date.now() - roundInfo[3].time_started))
-                console.log(ingameUserinfo[uindex].score_thisgame);
+                ingameUserinfo[uindex].score_thisgame = ingameUserinfo[uindex].score_thisgame + Math.floor(10000000 / ( Date.now() - roundInfo[3].time_started ))
+                console.log(`${ingameUserinfo[uindex].user}의 지금 점수`, ingameUserinfo[uindex].score_thisgame);
                 roomRef.set(
                     {
                         users: ingameUserinfo,
