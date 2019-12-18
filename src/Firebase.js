@@ -15,20 +15,3 @@ firebase.initializeApp(firebaseConfig);
 const firestore = new firebase.firestore();
 
 export { firestore }
-
-/*
-[users]
-	nickname
-	고유 id
-  최고점
-  
-[게임 방]
-	고유값(주소)
-	?? 조인한 사람들
-	isplaying
-	[이번 게임]
-		시작한 시간
-		초성
-		정답으로 입력된 단어
-
-    */
