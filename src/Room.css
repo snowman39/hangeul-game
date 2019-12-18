@@ -30,7 +30,7 @@ body{
 }
 
 .score-list{
-    position: absolute; right: 10%; top: 52%;
+    position: absolute; right: 16%; top: 52%;
     color: white;
 }
 
@@ -129,17 +129,20 @@ body{
 
 #answer-list{
     color: white;
-    position: absolute; left: 25%; transform: translateX(-50%); top: 36%;
+    position: absolute; left: 35%; transform: translateX(-50%); top: 36%;
     font-weight: bold;
     font-size: 200%;
+    display: block;
 }
 
 .answers{
     color: white;
-    position: absolute; top: 0%;
-    width: 150px;
+    position: relative;
+    display: inline;
+    border: 10px;
 }
 
 .description{
     color: gray;
+    font-size: 50%;
 }
