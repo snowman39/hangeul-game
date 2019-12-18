@@ -89,13 +89,20 @@ export default function Room() {
         return a;
     }
     useEffect(() => {
-        setInterval(()=>{
+        let userNameList = [];
+        setInterval(() => {
             let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
             roomRef.get().then((docs) => {
                 let users_local = docs.data().users;
                 let readyCount = 0;
                 users_local.forEach((user) => {
-                    if(user.is_ready) readyCount = readyCount+1;
+                    if(user.is_ready) {
+                        readyCount = readyCount+1;
+                    };
+                    if(!userNameList.includes(user.user)) {
+                        document.querySelector('.score-list').innerHTML += user.user + '<br />'
+                        userNameList.push(user.user);
+                    }
                 })
                 if(readyCount === docs.data().how_many) {
                     setAllReady(1);
@@ -108,7 +115,7 @@ export default function Room() {
                     console.log(docs.data().round_control[1].given_chosung);
                 }
             })
-        },100000000);
+        },1000000);
     }, [])
     const checkChosung = (str) => {
         const cho = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
