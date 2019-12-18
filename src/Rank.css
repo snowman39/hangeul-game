@@ -14,3 +14,8 @@
     width: 90%;
     position: absolute; left: 50%; transform: translateX(-50%); top: 120px;
 }
+
+.rankList{
+    position: absolute; left: 30%; top: 30%;
+    color: white;
+}
