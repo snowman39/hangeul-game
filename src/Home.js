@@ -10,7 +10,7 @@ import { firestore } from "./Firebase";
 
 export default function Home() {
     const [name, setName] = useState(null);
-    const [code, setCode] = useState(null);
+    const [code, setCode] = useState(localStorage.getItem('code'));
     const [login, setLogin] = useState(localStorage.getItem('uid') ? 1:0);
     const onStart = (e) => {
         e.preventDefault();
