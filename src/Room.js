@@ -18,14 +18,7 @@ export default function Room() {
     const [allReady, setAllReady] = useState(localStorage.getItem('allReady')? 1:0);
     const [start, setStart] = useState(localStorage.getItem('start')? 1:0);
     const convert = require('xml-js');
-    // const timer = (sec) => {
 
-    //     let timer = document.getElementById("timer")
-    //     timer.innerHTML = sec
-    //     setInterval(() => {      
-    //     timer.innerHTML -= 1;
-    //     }, 1000)
-    // }
     const checkWord = (e) => {
         e.preventDefault(); 
         document.getElementById("wordBox").value = ""
@@ -42,22 +35,24 @@ export default function Room() {
         .then(response => {
             const result = convert.xml2json(response.data, {compact: true, spaces: 4});
             return JSON.parse(result)
-        })
-        .then(response => {
+        }).then(response => {
             if (response.channel.item) {
             console.log("PASS");
             let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
-
             roomRef.get().then((docs)=>{
                 let uindex = 0;
                 uindex = localStorage.getItem('uindex');
                 let roundInfo = docs.data().round_control;
+                if (roundInfo[2].answers.includes(word)) {
+                    console.log("근데 이미 있는 단어지롱~")
+                } else {
                 roundInfo[2].answers.push(word);
                 let ingameUserinfo = docs.data().users;
                 console.log(ingameUserinfo);
                 console.log(ingameUserinfo[uindex].score_thisgame)
                 ingameUserinfo[uindex].score_thisgame = ingameUserinfo[uindex].score_thisgame + Math.floor(10000000 / (Date.now() - roundInfo[3].time_started))
                 console.log(ingameUserinfo[uindex].score_thisgame);
+                }
                 roomRef.set(
                     {
                         users: ingameUserinfo,
@@ -65,7 +60,7 @@ export default function Room() {
                         is_playing: true,
                         round_control: [roundInfo[0], roundInfo[1], roundInfo[2], roundInfo[3]]  
                     });
-            })
+                    })
             if ((response.channel.item).length > 1) {
                 if ((response.channel.item[0].sense).length > 1) {
                 console.log(response.channel.item[0].sense[0].definition._text)
@@ -78,15 +73,15 @@ export default function Room() {
             } else {
                 console.log("오, 이런 어려운 단어도 알다니! 아주 칭찬해~")
             }
-            } else {
-            console.log("WRONG")
+        } else {
+            console.log("WRONG");
             }
         })
-        } else {
-        console.log("자음 불일치!") 
-        }
+            } else {
+            console.log("자음 불일치!") 
+            }
+            } 
     }
-
     
     const shuffle = (a) => {
         for (let i = a.length - 1; i > 0; i--) {
@@ -215,8 +210,6 @@ export default function Room() {
         
     }
 
-
-    
     const onNextRound = (e) => {
         e.preventDefault();
         console.log(localStorage.getItem('uindex'));
@@ -240,13 +233,8 @@ export default function Room() {
         .then(proposeChosung())
         .catch((err)=>{
             return alert(err);
-        })
-        
+        })   
     }
-
-
-
-
 
     const onGameDone = (e) => {
         e.preventDefault();
@@ -272,26 +260,7 @@ export default function Room() {
         .catch((err)=>{
             return alert(err);
         })
-        
 }
-
-
-
-
-
-    // const scoreRecord = () => {
-    //     // let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
-    //     roomRef.get().then((docs) => {
-    //         let users_local = docs.data().users
-    //         users_local.forEach((user) => {
-    //             if(user.score_thisgame ) {
-
-    //             }
-    //         })
-    //     })
-    //     let timeLeft = document.getElementById("timer").innerHTML
-    //     const score = parseInt(timeLeft)
-    // }
 
     return (
         <div className="background">  
