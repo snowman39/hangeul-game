@@ -47,16 +47,24 @@ export default function Room() {
             if (response.channel.item) {
             console.log("PASS");
             let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
+            
+
+
+
             roomRef.get().then((docs)=>{
                 let roundInfo = docs.data().round_control;
                 roundInfo[2].answers.push(word);
+                let ingameUserinfo = docs.data().users;
+                console.log(roundInfo[3]);
+                ingameUserinfo[2] = ingameUserinfo[2] + (Date.now() - roundInfo[3]);
+            
                 roomRef.set(
                     {
-                        users: docs.data().users,
+                        users: ingameUserinfo,
                         how_many: docs.data().how_many,
                         is_playing: true,
                         round_control: [roundInfo[0], roundInfo[1], roundInfo[2], roundInfo[3]]  
-                    })
+                    });
             })
             if ((response.channel.item).length > 1) {
                 if ((response.channel.item[0].sense).length > 1) {
