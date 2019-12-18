@@ -10,9 +10,8 @@ import { firestore } from "./Firebase";
 
 export default function Home() {
     const [name, setName] = useState(null);
-    const [code, setCode] = useState(null);
-    const [login, setLogin] = useState(0);
-//    const [login, setLogin] = useState(localStorage.getItem('uid') ? 1:0);
+    const [code, setCode] = useState(localStorage.getItem('code'));
+    const [login, setLogin] = useState(localStorage.getItem('uid') ? 1:0);
     const onStart = (e) => {
         e.preventDefault();
         document.getElementById('start').style.display = "none";
@@ -64,9 +63,11 @@ export default function Home() {
         }).then(()=> {
             localStorage.setItem('code', code);
             localStorage.setItem('master', 1);
+            
             firestore.collection('rooms').doc(code).get()
             .then((doc)=>{
                 if(doc.exists) window.location = `Room/${localStorage.getItem('code')}`;
+                localStorage.setItem('uindex', 0);                  //새로시작이니까 어차피 uindex는 0(맨위)
             })
         }).catch((err) => {
             return alert(err);
@@ -99,7 +100,7 @@ export default function Home() {
                             if(doc.exists) window.location = `Room/${localStorage.getItem('code')}`;
                         })
                     }).catch((err) => {
-                        return alert("단어 입력에 실패했어요!" + err)
+                        return alert(err);
                     });
                 }
             }
@@ -108,12 +109,12 @@ export default function Home() {
             }
             console.log(`${code} 방에 입장하셨씁니다`);
             console.log(doc.data().users);
-            console.log("how many is", doc.data().how_many);                            //그냥 콘솔 확인하려구 찍어놓음. 지울 예정
+            localStorage.setItem('uindex', doc.data().how_many + 0);
+            console.log(localStorage.getItem('uindex'));
             }).catch((err) => {
                 return alert(err);
             })
     }
-
     return (
         <div className="background">  
             <div>
@@ -147,7 +148,7 @@ export default function Home() {
                     {login === 0 &&
                     <button className="login">
                         <form onSubmit={onLogin}>
-                            <input type="text" name="name" placeholder="별명 입력.." onChange={(e) => setName(e.target.value)} className="login-input"/>
+                            <input type="text" name="name" placeholder="별명 입력.." onChange={(e) => setName(e.tvalue)} className="login-input"/>
                             <input type="image" src={arrow} alt="로그인" className="arrow"/>
                         </form>
                     </button>
