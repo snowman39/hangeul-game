@@ -17,7 +17,6 @@ export default function Rank() {
     const [ready, setReady] = useState(localStorage.getItem('ready') ? 1:0);
     const [allReady, setAllReady] = useState(localStorage.getItem('start')? 1:0);
     const convert = require('xml-js');;
-<<<<<<< HEAD
     const timer = (sec) => {
         let timer = document.getElementById("timer")
         timer.innerHTML = sec
@@ -25,7 +24,6 @@ export default function Rank() {
         timer.innerHTML -= 1;
         }, 1000)
     }
-<<<<<<< HEAD
 
 
     const onGamestart = (e) => {                //게임 시작 버튼을 누르면 하는 것
@@ -50,18 +48,6 @@ export default function Rank() {
         
 
 
-=======
->>>>>>> 31b0935805160c652ac9c6f8c92295e590dcae8f
-=======
-    // const timer = (sec) => {
-
-    //     let timer = document.getElementById("timer")
-    //     timer.innerHTML = sec
-    //     setInterval(() => {      
-    //     timer.innerHTML -= 1;
-    //     }, 1000)
-    // }
->>>>>>> c6626cbef2e37bca41d9130cdaa91af1b6df4af4
     const checkWord = (e) => {
         e.preventDefault(); 
         document.getElementById("wordBox").value = ""
