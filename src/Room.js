@@ -8,6 +8,7 @@ import playBox from './PlayBox.png';
 import bubble from './WordBubble.png';
 import axios from 'axios'
 import './Room.css';
+import { firestore } from "./Firebase";
 
 const APP_KEY = "80BDA3A34160D126F3FB4094CBE073EF"
 
@@ -22,6 +23,29 @@ export default function Rank() {
         timer.innerHTML -= 1;
         }, 1000)
     }
+
+
+    const onGamestart = (e) => {                //게임 시작 버튼을 누르면 하는 것
+        e.preventDefault();
+        let roomRef = firestore.collection('rooms').doc(code);
+        roomRef.get().then(function(doc) {
+//                let users_local = doc.data().users;                             //users 목록을 users_local로 받아옴
+                roomRef.set(
+                    {
+                        users: doc.data().users,
+                        how_many: doc.data().how_many + 1 ,
+                        time_started: doc.data().time_started,
+                        round_control: [{round_no: doc.data().round_control[1]+1},{given_chosung: ""},{answers: []},{time_started: doc.data().round_control[3]}]
+                    }
+                        );
+                        console.log("게임 시작 버튼 눌렀을 때 roomref.get: ", doc);
+            })
+            .catch(function(error){
+                return alert(error);
+            })
+    }
+        
+
 
     const checkWord = (e) => {
         e.preventDefault(); 

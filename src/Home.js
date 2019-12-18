@@ -12,7 +12,8 @@ import { firestore } from "./Firebase";
 export default function Home() {
     const [name, setName] = useState(null);
     const [code, setCode] = useState(null);
-    const [login, setLogin] = useState(localStorage.getItem('uid') ? 1:0);
+    const [login, setLogin] = useState(0);
+//    const [login, setLogin] = useState(localStorage.getItem('uid') ? 1:0);
     const onStart = (e) => {
         e.preventDefault();
         document.getElementById('start').style.display = "none";
@@ -101,7 +102,9 @@ export default function Home() {
                 firestore.collection('rooms').doc(code).set(
                     {
                         users: [{user: localStorage.getItem('userName'), score_thisgame: 0}],
-                        how_many: 1
+                        how_many: 1,
+                        is_playing: 0,
+                        round_control : [{round_no: 0}, {given_chosung: ""}, {answers: []}, {time_started: Date.now()}]
                     },
                     { merge: true }
                 )
@@ -111,10 +114,11 @@ export default function Home() {
         .catch(function(error){
             return alert(error);
         });
-
-
-
     }
+
+
+
+    
     return (
         <div className="background">  
             <div>
