@@ -138,23 +138,6 @@ export default function Room() {
             })
         },1000);
     }, [])
-
-    // const proposeChosung = () => { // 처음 들어간 방은 초성이 바로 뜨지 않는 문제
-    //     let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
-    //     roomRef.get().then((docs) => {
-    //         if(docs.data().is_playing) { 
-    //             setStart(1);
-    //             localStorage.setItem('start', '1'); 
-    //         }  
-    //     })
-    //     .then(
-    //         roomRef.get().then((docs) => {
-    //             document.getElementById('consonant').innerHTML = docs.data().round_control[1].given_chosung;
-    //             console.log(docs.data().round_control[1].given_chosung) 
-    //         })
-    //     )
-    // }
-
     const checkChosung = (str) => {
         const cho = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
         let result = "";
@@ -226,7 +209,6 @@ export default function Room() {
                     round_control: [{round_no: 1}, {given_chosung: shuffleConsonants.slice(0, 2).join("")}, {answers: []}, {time_started: Date.now()}]
                 })
         })
-        // .then(proposeChosung())
         .then(() => {
             document.getElementById('game-start').style.display = "none";
             setStart(1);
