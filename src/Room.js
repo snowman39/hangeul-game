@@ -18,14 +18,7 @@ export default function Room() {
     const [allReady, setAllReady] = useState(localStorage.getItem('allReady')? 1:0);
     const [start, setStart] = useState(localStorage.getItem('start')? 1:0);
     const convert = require('xml-js');
-    // const timer = (sec) => {
 
-    //     let timer = document.getElementById("timer")
-    //     timer.innerHTML = sec
-    //     setInterval(() => {      
-    //     timer.innerHTML -= 1;
-    //     }, 1000)
-    // }
     const checkWord = (e) => {
         e.preventDefault(); 
         document.getElementById("wordBox").value = ""
