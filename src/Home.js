@@ -63,9 +63,11 @@ export default function Home() {
         }).then(()=> {
             localStorage.setItem('code', code);
             localStorage.setItem('master', 1);
+            
             firestore.collection('rooms').doc(code).get()
             .then((doc)=>{
                 if(doc.exists) window.location = `Room/${localStorage.getItem('code')}`;
+                localStorage.setItem('uindex', 0);                  //새로시작이니까 어차피 uindex는 0(맨위)
             })
         }).catch((err) => {
             return alert(err);
@@ -107,7 +109,8 @@ export default function Home() {
             }
             console.log(`${code} 방에 입장하셨씁니다`);
             console.log(doc.data().users);
-            console.log("how many is", doc.data().how_many);                            //그냥 콘솔 확인하려구 찍어놓음. 지울 예정
+            localStorage.setItem('uindex', doc.data().how_many + 0);
+            console.log(localStorage.getItem('uindex'));
             }).catch((err) => {
                 return alert(err);
             })

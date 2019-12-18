@@ -47,17 +47,17 @@ export default function Room() {
             if (response.channel.item) {
             console.log("PASS");
             let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
-            
-
-
 
             roomRef.get().then((docs)=>{
+                let uindex = 0;
+                uindex = localStorage.getItem('uindex');
                 let roundInfo = docs.data().round_control;
                 roundInfo[2].answers.push(word);
                 let ingameUserinfo = docs.data().users;
-                console.log(roundInfo[3]);
-                ingameUserinfo[2] = ingameUserinfo[2] + (Date.now() - roundInfo[3]);
-            
+                console.log(ingameUserinfo);
+                console.log(ingameUserinfo[uindex].score_thisgame)
+                ingameUserinfo[uindex].score_thisgame = ingameUserinfo[uindex].score_thisgame + Math.floor(10000000 / (Date.now() - roundInfo[3].time_started))
+                console.log(ingameUserinfo[uindex].score_thisgame);
                 roomRef.set(
                     {
                         users: ingameUserinfo,
@@ -194,10 +194,12 @@ export default function Room() {
     }
     const onGameStart = (e) => {
         e.preventDefault();
+        console.log(localStorage.getItem('uindex'));
         const consonantList = ["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ", "ㅅ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
         const shuffleConsonants = shuffle(consonantList);
         let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
         roomRef.get().then((docs) => {
+//            docs.data().users. = 3 ; //여기
             roomRef.set(
                 {
                 users: docs.data().users,
@@ -217,7 +219,9 @@ export default function Room() {
         })
         
     }
+
     
+
     // const scoreRecord = () => {
     //     // let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
     //     roomRef.get().then((docs) => {
