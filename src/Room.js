@@ -189,19 +189,20 @@ export default function Room() {
             return alert(err);
         })
     }
-    const scoreRecord = () => {
-        // let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
-        roomRef.get().then((docs) => {
-            let users_local = docs.data().users
-            users_local.forEach((user) => {
-                if(user.score_thisgame )
-            })
-        })
-        let timeLeft = document.getElementById("timer").innerHTML
-        const score = parseInt(timeLeft)
-        
-        
-    }
+    
+    // const scoreRecord = () => {
+    //     // let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
+    //     roomRef.get().then((docs) => {
+    //         let users_local = docs.data().users
+    //         users_local.forEach((user) => {
+    //             if(user.score_thisgame ) {
+
+    //             }
+    //         })
+    //     })
+    //     let timeLeft = document.getElementById("timer").innerHTML
+    //     const score = parseInt(timeLeft)
+    // }
 
     return (
         <div className="background">  
