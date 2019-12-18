@@ -26,7 +26,7 @@ export default function Rank() { // setInterval로 두기
       for (let i=0; i<10; i++) {
         console.log(rankList[i][0], rankList[i][1]);
         const ranker = document.createElement("div");
-        ranker.innerHTML = (i+1) + " " + rankList[i][0] + " " + rankList[i][1];
+        ranker.innerHTML = (i+1) + "위 " + rankList[i][0] + " " + rankList[i][1];
         document.querySelector(".rankList").appendChild(ranker);
       }
     } else {
@@ -39,7 +39,7 @@ export default function Rank() { // setInterval로 두기
           <div>
             <div className ="logo">
               <Link to="/">
-                <img src = {logo} className="logo" alt="메인화면"/>
+                <img src = {logo} className="rank-logo" alt="메인화면"/>
               </Link>
             </div> 
             <div className="Rank">

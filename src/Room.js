@@ -18,7 +18,6 @@ export default function Room() {
     const [allReady, setAllReady] = useState(localStorage.getItem('allReady')? 1:0);
     const [start, setStart] = useState(localStorage.getItem('start')? 1:0);
     const convert = require('xml-js');
-
     const checkWord = (e) => {
         e.preventDefault(); 
         document.getElementById("wordBox").value = ""
@@ -68,7 +67,6 @@ export default function Room() {
                         round_control: [roundInfo[0], roundInfo[1], roundInfo[2], roundInfo[3]]  
                     });
                 }
-
             })
             if ((response.channel.item).length > 1) {
                 if ((response.channel.item[0].sense).length > 1) {
@@ -97,8 +95,6 @@ export default function Room() {
             }, 1000) 
         }
     }
-
-    
     const shuffle = (a) => {
         for (let i = a.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -257,9 +253,6 @@ export default function Room() {
         })
         
     }
-
-
-    
     const onNextRound = (e) => {
         e.preventDefault();
         console.log(localStorage.getItem('uindex'));
@@ -283,21 +276,14 @@ export default function Room() {
                 is_playing: true,
                 round_control : nextRoundState
                 })
-        })
-        .catch((err)=>{
+        }).catch((err)=>{
             return alert(err);
         })
-        
     }
-
-
-
-
 
     const onGameDone = (e) => {
         e.preventDefault();
         let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
-
         roomRef.get().then((docs) => {
             console.log(' users는 다 있나?', docs.data().users)
             docs.data().users.forEach((e) => {
@@ -320,25 +306,6 @@ export default function Room() {
         })
         
 }
-
-
-
-
-
-    // const scoreRecord = () => {
-    //     // let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
-    //     roomRef.get().then((docs) => {
-    //         let users_local = docs.data().users
-    //         users_local.forEach((user) => {
-    //             if(user.score_thisgame ) {
-
-    //             }
-    //         })
-    //     })
-    //     let timeLeft = document.getElementById("timer").innerHTML
-    //     const score = parseInt(timeLeft)
-    // }
-
     return (
         <div className="background">  
           <div>
