@@ -49,7 +49,11 @@ export default function Room() {
             let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
             roomRef.get().then((docs)=>{
                 let roundInfo = docs.data().round_control;
+                if (roundInfo[2].answers.includes(word)) {
+                    console.log("근데 이미 있는 단어지롱~")
+                } else {
                 roundInfo[2].answers.push(word);
+                }
                 roomRef.set(
                     {
                         users: docs.data().users,
@@ -57,6 +61,7 @@ export default function Room() {
                         is_playing: true,
                         round_control: [roundInfo[0], roundInfo[1], roundInfo[2], roundInfo[3]]  
                     })
+                
             })
             if ((response.channel.item).length > 1) {
                 if ((response.channel.item[0].sense).length > 1) {
@@ -70,6 +75,7 @@ export default function Room() {
             } else {
                 console.log("오, 이런 어려운 단어도 알다니! 아주 칭찬해~")
             }
+            
             } else {
             console.log("WRONG")
             }
