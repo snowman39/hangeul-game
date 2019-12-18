@@ -98,7 +98,7 @@ export default function Home() {
                             if(doc.exists) window.location = `Room/${localStorage.getItem('code')}`;
                         })
                     }).catch((err) => {
-                        return alert("단어 입력에 실패했어요!" + err)
+                        return alert(err);
                     });
                 }
             }
@@ -112,7 +112,6 @@ export default function Home() {
                 return alert(err);
             })
     }
-
     return (
         <div className="background">  
             <div>

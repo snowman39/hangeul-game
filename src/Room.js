@@ -12,11 +12,12 @@ import { firestore } from "./Firebase";
 
 const APP_KEY = "80BDA3A34160D126F3FB4094CBE073EF"
 
-export default function Rank() {
+export default function Room() {
     const [word, setWord] = useState(null);
     const [ready, setReady] = useState(localStorage.getItem('ready') ? 1:0);
-    const [allReady, setAllReady] = useState(localStorage.getItem('start')? 1:0);
-    const convert = require('xml-js');;
+    const [allReady, setAllReady] = useState(localStorage.getItem('allReady')? 1:0);
+    const [start, setStart] = useState(localStorage.getItem('start')? 1:0);
+    const convert = require('xml-js');
     // const timer = (sec) => {
 
     //     let timer = document.getElementById("timer")
@@ -40,7 +41,19 @@ export default function Rank() {
         })
         .then(response => {
             if (response.channel.item) {
-            console.log("PASS")
+            console.log("PASS");
+            let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
+            roomRef.get().then((docs)=>{
+                let roundInfo = docs.data().round_control;
+                roundInfo[2] = roundInfo[2].answers.concat([word]);
+                roomRef.set(
+                    {
+                        users: docs.data().users,
+                        how_many: docs.data().how_many,
+                        is_playing: true,
+                        round_control: [roundInfo[0], roundInfo[1], roundInfo[2], roundInfo[3]]  
+                    })
+            })
             if ((response.channel.item).length > 1) {
                 if ((response.channel.item[0].sense).length > 1) {
                 console.log(response.channel.item[0].sense[0].definition._text)
@@ -75,7 +88,6 @@ export default function Rank() {
         }
         return a;
     }
-    console.log(allReady);
     useEffect(() => {
         setInterval(()=>{
             let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
@@ -87,14 +99,17 @@ export default function Rank() {
                 })
                 if(readyCount === docs.data().how_many) {
                     setAllReady(1);
+                    localStorage.setItem('allReady', '1');
+                }
+                if(docs.data().is_playing) {
+                    setStart(1);
                     localStorage.setItem('start', '1');
+                    document.getElementById('consonant').innerHTML = docs.data().round_control[1].given_chosung;
+                    console.log(docs.data().round_control[1].given_chosung);
                 }
             })
-        },10000000);
+        },100000000);
     }, [])
-    if(allReady) {
-        
-    } //이거 암것도 안해도 두 번씩 실행되는데 이유좀 알려주세요 & 입력할 때 마다 초성 바뀜 ㅋㅋㅋㅋㅋㅋ, localstorage 'start'로 처리해도 될 것 같은데 뭔가 오류났었어서 보류
     const checkChosung = (str) => {
         const cho = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
         let result = "";
@@ -165,7 +180,12 @@ export default function Rank() {
                 is_playing: true,
                 round_control: [{round_no: 1}, {given_chosung: shuffleConsonants.slice(0, 2).join("")}, {answers: []}, {time_started: Date.now()}]
                 })
-        }).catch((err)=>{
+        }).then(()=>{
+            document.getElementById('game-start').style.display = "none";
+            setStart(1);
+            localStorage.setItem('start','1');
+        })
+        .catch((err)=>{
             return alert(err);
         })
     }
@@ -205,13 +225,12 @@ export default function Rank() {
                 <button id="game-start" onClick={onGameStart}>
                     게임 시작!
                 </button>
-                // <form onSubmit={checkWord}>
-                //     <label> 단어를 입력하세요: </label> 
-                //     <input type="text" id="wordBox" placeholder="단어 입력.." onChange={(e) => {setWord(e.target.value)}} />
-                // </form>
             }
-            {
-
+            {start > 0 &&
+                <form onSubmit={checkWord}>
+                    <label> 단어를 입력하세요: </label> 
+                    <input type="text" id="wordBox" placeholder="단어 입력.." onChange={(e) => {setWord(e.target.value)}} />
+                </form>
             }
             <img src={scoreBox} className="score-box" alt="점수판"/>
             <div className="score-list">
