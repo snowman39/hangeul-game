@@ -10,7 +10,7 @@ import axios from 'axios'
 import './Room.css';
 import { firestore } from "./Firebase";
 
-const APP_KEY = "80BDA3A34160D126F3FB4094CBE073EF" // 커밋 테스트용 주석
+const APP_KEY = "5EC1E470048E8366C37EFDB14F041D78" // 커밋 테스트용 주석
 
 export default function Room() {
     const [word, setWord] = useState(null);
@@ -95,13 +95,6 @@ export default function Room() {
             }, 1000) 
         }
     }
-    // const randomChosung = (n) => {
-    //     const consonantList = ["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ", "ㅅ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
-    //     const shuffleConsonants = shuffle(consonantList);
-    //     console.log(shuffleConsonants);
-    //     const consonants = shuffleConsonants.slice(0, n).join("")
-    //     document.getElementById('consonant').innerHTML = consonants
-    // }
     const shuffle = (a) => {
         for (let i = a.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -111,6 +104,7 @@ export default function Room() {
     }
     useEffect(() => {
         let userNameList = [];
+        let answerList = [];
         setInterval(() => {
             let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
             roomRef.get().then((docs) => {
@@ -121,8 +115,47 @@ export default function Room() {
                         readyCount = readyCount+1;
                     };
                     if(!userNameList.includes(user.user)) {
-                        document.querySelector('.score-list').innerHTML += user.user + '<br />'
+                        const userName = document.createElement('div');
+                        userName.innerHTML = user.user;
+                        userName.classList.add('participants');
+                        const scoreList = document.querySelector('.score-list');
+                        scoreList.appendChild(userName);
                         userNameList.push(user.user);
+                    }
+                })
+                let answer_local = docs.data().round_control[2].answers;
+                answer_local.forEach((answer) => {
+                    if(!answerList.includes(answer)) {
+                        const answers = document.createElement('div');
+                        answers.innerText = answer;
+                        answers.classList.add('answers');
+                        const description = document.createElement('div');
+                        axios.get(`https://cors-anywhere.herokuapp.com/https://krdict.korean.go.kr/api/search?certkey_no=1154&key=${APP_KEY}&type_search=search&method=WORD_INFO&part=word&q=${answer}&sort=dict`, {
+                        })
+                        .then(response => {
+                            const result = convert.xml2json(response.data, {compact: true, spaces: 4});
+                            return JSON.parse(result)
+                        })
+                        .then(response => {
+                            console.log(response);
+                            if ((response.channel.item).length > 1) {
+                                if ((response.channel.item[0].sense).length > 1) {
+                                description.innerText = response.channel.item[0].sense[0].definition._text;
+                                }
+                                else {
+                                description.innerText = response.channel.item[0].sense.definition._text;
+                                }
+                            } else if ((response.channel.item).length === 1) {
+                                description.innerText = response.channel.item.sense.definition._text
+                            } else {
+                                description.innerText = "오, 이런 어려운 단어도 알다니! 아주 칭찬해~";
+                            }
+                        });
+                        description.classList.add('description');
+                        const answerBox = document.getElementById('answer-list');
+                        answers.appendChild(description);
+                        answerBox.appendChild(answers);
+                        answerList.push(answer);
                     }
                 })
                 if(readyCount === docs.data().how_many) {
@@ -133,10 +166,9 @@ export default function Room() {
                     setStart(1);
                     localStorage.setItem('start', '1');
                     document.getElementById('consonant').innerHTML = docs.data().round_control[1].given_chosung;
-                    console.log(docs.data().round_control[1].given_chosung);
                 }
             })
-        },1000);
+        },5000);
     }, [])
     const checkChosung = (str) => {
         const cho = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
@@ -234,6 +266,7 @@ export default function Room() {
                 <img src={logo} className="logo" alt="로고"/>
             </div>
             <img src={playBox} className="play-box" alt="게임판"/>
+            <div id="answer-list"></div>
             <div className="consonant"></div>
             <div className="checkAnswer"></div>
             {allReady === 0 & ready === 0 &&
