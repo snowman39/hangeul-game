@@ -57,9 +57,7 @@ export default function Room() {
                     }, 1000)
                 } else {
                 roundInfo[2].answers.push(word);
-                }
-
-            let ingameUserinfo = docs.data().users;
+                let ingameUserinfo = docs.data().users;
                 ingameUserinfo[uindex].score_thisgame = ingameUserinfo[uindex].score_thisgame + Math.floor(10000000 / ( Date.now() - roundInfo[3].time_started ))
                 console.log(`${ingameUserinfo[uindex].user}의 지금 점수`, ingameUserinfo[uindex].score_thisgame);
                 roomRef.set(
@@ -69,6 +67,8 @@ export default function Room() {
                         is_playing: true,
                         round_control: [roundInfo[0], roundInfo[1], roundInfo[2], roundInfo[3]]  
                     });
+                }
+
             })
             if ((response.channel.item).length > 1) {
                 if ((response.channel.item[0].sense).length > 1) {
