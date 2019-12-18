@@ -35,9 +35,8 @@ export default function Room() {
         if (inputConsonant === consonant) {
             checkAnswer.innerHTML = "자음 일치!"
             setTimeout(() => {
-                document.querySelector('.checkAnswer').style.display = 'none';
-            }, 1500)
-        console.log("자음 일치!") 
+                checkAnswer.innerHTML = '';
+            }, 1000)
         axios.get(`https://cors-anywhere.herokuapp.com/https://krdict.korean.go.kr/api/search?certkey_no=1154&key=${APP_KEY}&type_search=search&method=WORD_INFO&part=word&q=${word}&sort=dict`, {
         })
         .then(response => {
@@ -46,13 +45,18 @@ export default function Room() {
         })
         .then(response => {
             if (response.channel.item) {
-                checkAnswer.innerHTML = "PASS"
-                console.log("PASS");
+                document.querySelector('.checkAnswer').innerHTML = "PASS"
+                setTimeout(() => {
+                    document.querySelector('.checkAnswer').innerHTML = '';
+                }, 1000)
                 let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
                 roomRef.get().then((docs)=>{
                     let roundInfo = docs.data().round_control;
                     if (roundInfo[2].answers.includes(word)) {
-                        console.log("근데 이미 있는 단어지롱~")
+                        checkAnswer.innerHTML = "근데 이미 있는 단어지롱~"
+                        setTimeout(() => {
+                            checkAnswer.innerHTML = '';
+                        }, 1000)
                     } else {
                     roundInfo[2].answers.push(word);
                     }
@@ -78,11 +82,17 @@ export default function Room() {
                 }
             
             } else {
-            console.log("WRONG")
+                checkAnswer.innerHTML = "WRONG"
+                setTimeout(() => {
+                    checkAnswer.innerHTML = '';
+                }, 1000)
             }
         })
         } else {
-        console.log("자음 불일치!") 
+            checkAnswer.innerHTML = "자음 불일치!"
+            setTimeout(() => {
+                checkAnswer.innerHTML = '';
+            }, 1000) 
         }
     }
     // const randomChosung = (n) => {
@@ -119,25 +129,31 @@ export default function Room() {
                     setAllReady(1);
                     localStorage.setItem('allReady', '1');
                 }
+                if(docs.data().is_playing) {
+                    setStart(1);
+                    localStorage.setItem('start', '1');
+                    document.getElementById('consonant').innerHTML = docs.data().round_control[1].given_chosung;
+                    console.log(docs.data().round_control[1].given_chosung);
+                }
             })
         },1000);
     }, [])
 
-    const proposeChosung = () => { // 처음 들어간 방은 초성이 바로 뜨지 않는 문제
-        let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
-        roomRef.get().then((docs) => {
-            if(docs.data().is_playing) { 
-                setStart(1);
-                localStorage.setItem('start', '1'); 
-            }  
-        })
-        .then(
-            roomRef.get().then((docs) => {
-                document.getElementById('consonant').innerHTML = docs.data().round_control[1].given_chosung;
-                console.log(docs.data().round_control[1].given_chosung) 
-            })
-        )
-    }
+    // const proposeChosung = () => { // 처음 들어간 방은 초성이 바로 뜨지 않는 문제
+    //     let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
+    //     roomRef.get().then((docs) => {
+    //         if(docs.data().is_playing) { 
+    //             setStart(1);
+    //             localStorage.setItem('start', '1'); 
+    //         }  
+    //     })
+    //     .then(
+    //         roomRef.get().then((docs) => {
+    //             document.getElementById('consonant').innerHTML = docs.data().round_control[1].given_chosung;
+    //             console.log(docs.data().round_control[1].given_chosung) 
+    //         })
+    //     )
+    // }
 
     const checkChosung = (str) => {
         const cho = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
@@ -204,13 +220,13 @@ export default function Room() {
         roomRef.get().then((docs) => {
             roomRef.set(
                 {
-                users: docs.data().users,
-                how_many: docs.data().how_many,
-                is_playing: true,
-                round_control: [{round_no: 1}, {given_chosung: shuffleConsonants.slice(0, 2).join("")}, {answers: []}, {time_started: Date.now()}]
+                    users: docs.data().users,
+                    how_many: docs.data().how_many,
+                    is_playing: true,
+                    round_control: [{round_no: 1}, {given_chosung: shuffleConsonants.slice(0, 2).join("")}, {answers: []}, {time_started: Date.now()}]
                 })
         })
-        .then(proposeChosung())
+        // .then(proposeChosung())
         .then(() => {
             document.getElementById('game-start').style.display = "none";
             setStart(1);
@@ -221,20 +237,6 @@ export default function Room() {
         })
         
     }
-    
-    // const scoreRecord = () => {
-    //     // let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
-    //     roomRef.get().then((docs) => {
-    //         let users_local = docs.data().users
-    //         users_local.forEach((user) => {
-    //             if(user.score_thisgame ) {
-
-    //             }
-    //         })
-    //     })
-    //     let timeLeft = document.getElementById("timer").innerHTML
-    //     const score = parseInt(timeLeft)
-    // }
 
     return (
         <div className="background">  
