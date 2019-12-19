@@ -96,6 +96,9 @@ export default function Room() {
                 checkAnswer.innerHTML = '';
             }, 1000) 
         }
+
+
+        
     }
 
     
@@ -106,8 +109,10 @@ export default function Room() {
         }
         return a;
     }
+
     useEffect(() => {
         let userNameList = [];
+        let userScoreList = [];
         let answerList = [];
         setInterval(() => {
             let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
@@ -119,13 +124,36 @@ export default function Room() {
                         readyCount = readyCount+1;
                     };
                     if(!userNameList.includes(user.user)) {
+                        console.log("이름 리렌");
                         const userName = document.createElement('div');
                         userName.innerHTML = user.user;
                         userName.classList.add('participants');
                         const scoreList = document.querySelector('.score-list');
                         scoreList.appendChild(userName);
                         userNameList.push(user.user);
+
+                        const userScore = document.createElement('div');
+                        userScore.innerHTML = user.score_thisgame;
+                        userScore.classList.add('gamescores');
+                        const scoreListScore = document.querySelector('.score-list-score');
+                        scoreListScore.appendChild(userScore);
+                        userScoreList.push(user.score_thisgame);
+                        console.log("점수 리렌");
+    
                     }
+
+                    
+
+                    const userScore = document.createElement('div');
+                    userScore.innerHTML = user.score_thisgame;
+                    userScore.classList.add('gamescores');
+                    const scoreList = document.querySelector('.score-list-score');
+                    scoreList.appendChild(userScore);
+                    userScoreList.push(user.score_thisgame);
+                    console.log("점수 리렌");
+
+                        //점수용
+
                 })
                 let answer_local = docs.data().round_control[2].answers;
                 answer_local.forEach((answer) => {
@@ -296,10 +324,8 @@ export default function Room() {
         let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
 
         roomRef.get().then((docs) => {
-            console.log(' users는 다 있나?', docs.data().users)
             docs.data().users.forEach((e) => {
                 let userRef = firestore.collection('users').doc(e.user);
-
                 userRef.get().then((user) => {
                     if(e.score_thisgame > user.data().best_score)
                     {
@@ -315,7 +341,9 @@ export default function Room() {
         .catch((err)=>{
             return alert(err);
         })
-        
+
+        window.location = `../rank`;
+
 }
 
 
@@ -392,6 +420,7 @@ export default function Room() {
             }
             <img src={scoreBox} className="score-box" alt="점수판"/>
             <div className="score-list"></div>
+            <div className="score-list-score"></div>
           </div>
       </div>
     )
