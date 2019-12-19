@@ -468,22 +468,24 @@ export default function Room() {
             console.log("첫 번째 판");
             break;
           case 1:
+            bubble.innerHTML = "첫 번째 판";
+            console.log("첫 번째 판");
+            break;
+          case 2:
             bubble.innerHTML = "두 번째 판";
             console.log("두 번째 판");
             break;
-          case 2:
+          case 3:
             bubble.innerHTML = "세 번째 판";
             console.log("세 번째 판");
             break;
-          case 3:
+          case 4:
             bubble.innerHTML = "네 번째 판";
             console.log("네 번째 판");
             break;
-          case 4:
+          case 5:
             bubble.innerHTML = "마지막 판";
             console.log("마지막 판");
-            break;
-          case 5:
             onGameDone();
             break;
           default:
