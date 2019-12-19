@@ -40,8 +40,14 @@ body{
 }
 
 .chatting-box{
-    position: absolute; left: 50%; top: 52%;
+    position: absolute; left: 8.2%; top: 55%;
     color: white;
+}
+
+.chatting-list{
+    position: absolute; left: 8.2%; top: 50%;
+    height: 45%;
+    width: auto;
 }
 
 

@@ -127,8 +127,10 @@ export default function Room() {
                 let users_local = docs.data().users;
                 let readyCount = 0;
                 let chattings = docs.data().log;
+                console.log("dfasds", chattings.length);
+                console.log("여기 보세요", chattings? 1:0);
                 document.querySelector('.chatting-box').innerHTML='';
-                if(chattings.length < 10)
+                if(chattings && chattings.length < 10)
                 {
                     for(let i =0; i<chattings.length; i++)
                     {
@@ -300,6 +302,7 @@ export default function Room() {
         })
         .then(() => {
             document.getElementById('game-start').style.display = "none";
+            document.getElementsByClassName('help')[0].style.display = "none";
             setStart(1);
             localStorage.setItem('start','1');
         })
@@ -423,6 +426,7 @@ export default function Room() {
             <img src={scoreBox} className="score-box" alt="점수판"/>
             <div className="score-list"></div>
             <div className="score-list-score"></div>
+            <img src={scoreBox} className="chatting-list" alt="채팅창"/>
             <div className="chatting-box"></div>
 
           </div>
