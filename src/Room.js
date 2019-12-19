@@ -18,7 +18,6 @@ export default function Room() {
     const [allReady, setAllReady] = useState(localStorage.getItem('allReady')? 1:0);
     const [start, setStart] = useState(localStorage.getItem('start')? 1:0);
     const convert = require('xml-js');
-
     const checkWord = (e) => {
         e.preventDefault(); 
         document.getElementById("wordBox").value = ""
@@ -68,7 +67,6 @@ export default function Room() {
                         round_control: [roundInfo[0], roundInfo[1], roundInfo[2], roundInfo[3]]  
                     });
                 }
-
             })
             if ((response.channel.item).length > 1) {
                 if ((response.channel.item[0].sense).length > 1) {
@@ -100,8 +98,6 @@ export default function Room() {
 
         
     }
-
-    
     const shuffle = (a) => {
         for (let i = a.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -285,9 +281,6 @@ export default function Room() {
         })
         
     }
-
-
-    
     const onNextRound = (e) => {
         e.preventDefault();
         console.log(localStorage.getItem('uindex'));
@@ -295,7 +288,10 @@ export default function Room() {
         const shuffleConsonants = shuffle(consonantList);
         let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
         roomRef.get().then((docs) => {
-            document.getElementsByClassName('answers').remove();
+            let answerNum = document.getElementsByClassName('answers').length;
+            for(let i =0; i<answerNum; i++){
+                document.getElementsByClassName('answers')[i].style.display = "none";
+            }
             let nextRoundState = docs.data().round_control;
             nextRoundState[0].round_no ++;
             nextRoundState[1].given_chosung = shuffleConsonants.slice(0, 2).join("");
@@ -308,21 +304,14 @@ export default function Room() {
                 is_playing: true,
                 round_control : nextRoundState
                 })
-        })
-        .catch((err)=>{
+        }).catch((err)=>{
             return alert(err);
         })
-        
     }
-
-
-
-
 
     const onGameDone = (e) => {
         e.preventDefault();
         let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
-
         roomRef.get().then((docs) => {
             docs.data().users.forEach((e) => {
                 let userRef = firestore.collection('users').doc(e.user);
@@ -345,25 +334,6 @@ export default function Room() {
         window.location = `../rank`;
 
 }
-
-
-
-
-
-    // const scoreRecord = () => {
-    //     // let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
-    //     roomRef.get().then((docs) => {
-    //         let users_local = docs.data().users
-    //         users_local.forEach((user) => {
-    //             if(user.score_thisgame ) {
-
-    //             }
-    //         })
-    //     })
-    //     let timeLeft = document.getElementById("timer").innerHTML
-    //     const score = parseInt(timeLeft)
-    // }
-
     return (
         <div className="background">  
           <div>
