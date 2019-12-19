@@ -45,7 +45,7 @@ export default function Home() {
     }
     const onNew = (e) => {
         e.preventDefault();
-        if(!code)  return alert('암호를 입력하세요.');F
+        if(!code)  return alert('암호를 입력하세요.');
         firestore.collection('rooms').doc(code).get()
         .then((doc) => {
             if(doc.exists)  return alert('이미 있는 방입니다.');
