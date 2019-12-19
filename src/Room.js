@@ -310,6 +310,11 @@ export default function Room() {
                     userRef.set(
                         {best_score: e.score_thisgame,
                         user: user.data().user
+                        }).then(() => {
+                            roomRef.delete().then(() => {
+                                console.log("간다간다 숑간다");
+                                window.location = `../rank`;
+                            })
                         })
                     console.log(e.user, "의 맥스값이 변해용");
                     }
@@ -320,7 +325,6 @@ export default function Room() {
             return alert(err);
         })
 
-        window.location = `../rank`;
 
 }
     return (
