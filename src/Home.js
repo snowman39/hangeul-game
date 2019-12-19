@@ -45,12 +45,11 @@ export default function Home() {
     }
     const onNew = (e) => {
         e.preventDefault();
-        if(!code)  return alert('암호를 입력하세요.');
+        if(!code)  return alert('암호를 입력하세요.');F
         firestore.collection('rooms').doc(code).get()
         .then((doc) => {
             if(doc.exists)  return alert('이미 있는 방입니다.');
             else{
-            console.log("else 안");
                 firestore.collection('rooms').doc(code).set(
                     {
                         users: [{user: localStorage.getItem('uid'), score_thisgame: 0, is_ready: false, is_master: true}],
@@ -62,11 +61,8 @@ export default function Home() {
                 ).then(()=> {
                     localStorage.setItem('code', code);
                     localStorage.setItem('master', 1);
-                    firestore.collection('rooms').doc(code).get()
-                    .then((doc)=>{
-                        if(doc.exists) window.location = `Room/${localStorage.getItem('code')}`;
+                        window.location = `Room/${localStorage.getItem('code')}`;
                         localStorage.setItem('uindex', 0);                  //새로시작이니까 어차피 uindex는 0(맨위)
-                    })
                 })
             }
         }).catch((err) => {
@@ -74,6 +70,7 @@ export default function Home() {
         });
     }
     const onEnter = (e) => {
+        console.log("code is", code);
         e.preventDefault();
         if (!code)  return alert('암호를 입력하세요.');
         let roomRef = firestore.collection('rooms').doc(code);
@@ -89,7 +86,6 @@ export default function Home() {
                     if(doc.data().is_playing) {
                         return alert("이미 플레이 중인 방입니다.")
                     } else {
-                        console.log("여기도 안오냐?");
                     users_local = users_local.concat([{user: localStorage.getItem('uid'), score_thisgame: 0, is_ready: false, is_master: false}]);       //users를 새로 update
                     roomRef.set(
                         {
@@ -108,8 +104,8 @@ export default function Home() {
             else {
                 return alert("해당 암호에 맞는 방이 없습니다.");
             }
-            if(doc.exists) window.location = `Room/${localStorage.getItem('code')}`;
             console.log(`${code} 방에 입장하셨씁니다`);
+            if(doc.exists) window.location = `Room/${code}`;
             localStorage.setItem('uindex', doc.data().how_many + 0);    //doc.data()를 string으로 받아오는데, + 0 을 처리하며 알아서 숫자로 바꿔줌
             console.log(localStorage.getItem('uindex'));
             }).catch((err) => {

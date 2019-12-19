@@ -34,6 +34,11 @@ body{
     color: white;
 }
 
+.score-list-score{
+    position: absolute; right: 16%; top: 52%;
+    color: white;
+}
+
 .play-box{
     height: 73%;
     width: 58%;
