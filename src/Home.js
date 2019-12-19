@@ -55,7 +55,8 @@ export default function Home() {
                         users: [{user: localStorage.getItem('uid'), score_thisgame: 0, is_ready: false, is_master: true}],
                         how_many: 1,
                         is_playing: false,
-                        round_control: [{round_no: 0}, {given_chosung: ""}, {answers: []}, {time_started: 0}]
+                        round_control: [{round_no: 0}, {given_chosung: ""}, {answers: []}, {time_started: 0}],
+                        log: []
                     },
                     { merge: true },
                 ).then(()=> {
@@ -92,7 +93,8 @@ export default function Home() {
                             users: users_local,
                             how_many: doc.data().how_many + 1,
                             is_playing: false,
-                            round_control: [{round_no: 0}, {given_chosung: ""}, {answers: []}, {time_started: 0}]
+                            round_control: [{round_no: 0}, {given_chosung: ""}, {answers: []}, {time_started: 0}],
+                            log: []
                         }).then(() => {
                             localStorage.setItem('code', code);
                             console.log("간다간다 쑝간다");

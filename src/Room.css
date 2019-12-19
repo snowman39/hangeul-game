@@ -39,6 +39,12 @@ body{
     color: white;
 }
 
+.chatting-box{
+    position: absolute; left: 50%; top: 52%;
+    color: white;
+}
+
+
 .play-box{
     height: 73%;
     width: 58%;

@@ -64,7 +64,7 @@ export default function Room() {
                         users: ingameUserinfo,
                         how_many: docs.data().how_many,
                         is_playing: true,
-                        round_control: [roundInfo[0], roundInfo[1], roundInfo[2], roundInfo[3]]  
+                        round_control: [roundInfo[0], roundInfo[1], roundInfo[2], roundInfo[3]]
                     });
                 }
             })
@@ -82,6 +82,7 @@ export default function Room() {
                 }
             
             } else {
+                console.log()
                 checkAnswer.innerHTML = "WRONG"
                 setTimeout(() => {
                     checkAnswer.innerHTML = '';
@@ -95,7 +96,14 @@ export default function Room() {
             }, 1000) 
         }
 
-
+        let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
+        roomRef.get().then((docs) => {
+            roomRef.update(
+                {
+                    log: docs.data().log.concat(`${localStorage.getItem('uid')}: ${word}`)   
+                }
+            )
+        })
         
     }
     const shuffle = (a) => {
@@ -110,13 +118,42 @@ export default function Room() {
         let userNameList = [];
         let userScoreList = [];
         let answerList = [];
+        let chattingList = []; //채팅방 추가
+
         setInterval(() => {
             let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
-            console.log("점수 지우기");
-            document.querySelector('.score-list-score').innerHTML='';
+            document.querySelector('.score-list-score').innerHTML='';   //점수 refresh를 위하여 제거
             roomRef.get().then((docs) => {
                 let users_local = docs.data().users;
                 let readyCount = 0;
+                let chattings = docs.data().log;
+                document.querySelector('.chatting-box').innerHTML='';
+                if(chattings.length < 10)
+                {
+                    for(let i =0; i<chattings.length; i++)
+                    {
+                        const userChat = document.createElement('div');
+                        userChat.innerHTML = chattings[i];
+                        userChat.classList.add('gamechats');
+                        const chatListScore = document.querySelector('.chatting-box');
+                        chatListScore.appendChild(userChat);           
+                       chattingList[i] = (chattings[i]);
+                        console.log("10이하");    
+                    }
+                }
+                else{
+                    for(let i =0; i<10; i++)
+                    {
+                        const userChat = document.createElement('div');
+                        userChat.innerHTML = chattings[chattings.length + i -10];
+                        userChat.classList.add('gamechats');
+                        const chatListScore = document.querySelector('.chatting-box');
+                        chatListScore.appendChild(userChat);
+                       chattingList[i] = (chattings.length + i - 10);
+                        console.log("챗방 리렌");    
+                    }
+                }
+        
                 users_local.forEach((user) => {
                     if(user.is_ready) {
                         readyCount = readyCount+1;
@@ -136,8 +173,7 @@ export default function Room() {
                     const scoreListScore = document.querySelector('.score-list-score');
                     scoreListScore.appendChild(userScore);           
                    userScoreList.push(user.score_thisgame);
-                    console.log("점수 재리렌");
-                        //점수용
+                    console.log("점수 리렌");
 
                 })
                 let answer_local = docs.data().round_control[2].answers;
@@ -209,7 +245,8 @@ export default function Room() {
                 users: users_local,
                 how_many: docs.data().how_many,
                 is_playing: false,
-                round_control: [{round_no: 0}, {given_chosung: ""}, {answers: []}, {time_started: 0}]
+                round_control: [{round_no: 0}, {given_chosung: ""}, {answers: []}, {time_started: 0}],
+                log: []
                 }).then(()=>{
                     localStorage.setItem('ready', '1');
                     setReady(1);
@@ -233,7 +270,8 @@ export default function Room() {
                 users: users_local,
                 how_many: docs.data().how_many,
                 is_playing: false,
-                round_control: [{round_no: 0}, {given_chosung: ""}, {answers: []}, {time_started: 0}]
+                round_control: [{round_no: 0}, {given_chosung: ""}, {answers: []}, {time_started: 0}],
+                log: []
                 }).then(()=>{
                     localStorage.removeItem('ready');
                     setReady(0);
@@ -251,13 +289,13 @@ export default function Room() {
         const shuffleConsonants = shuffle(consonantList);
         let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
         roomRef.get().then((docs) => {
-//            docs.data().users. = 3 ; //여기
             roomRef.set(
                 {
                     users: docs.data().users,
                     how_many: docs.data().how_many,
                     is_playing: true,
-                    round_control: [{round_no: 1}, {given_chosung: shuffleConsonants.slice(0, 2).join("")}, {answers: []}, {time_started: Date.now()}]
+                    round_control: [{round_no: 1}, {given_chosung: shuffleConsonants.slice(0, 2).join("")}, {answers: []}, {time_started: Date.now()}],
+                    log: []
                 })
         })
         .then(() => {
@@ -291,7 +329,8 @@ export default function Room() {
                 users: docs.data().users,
                 how_many: docs.data().how_many,
                 is_playing: true,
-                round_control : nextRoundState
+                round_control : nextRoundState,
+                log: docs.data().log
                 })
         }).catch((err)=>{
             return alert(err);
@@ -384,6 +423,8 @@ export default function Room() {
             <img src={scoreBox} className="score-box" alt="점수판"/>
             <div className="score-list"></div>
             <div className="score-list-score"></div>
+            <div className="chatting-box"></div>
+
           </div>
       </div>
     )
