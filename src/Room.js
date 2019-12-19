@@ -244,7 +244,7 @@ export default function Room() {
           ).innerHTML = docs.data().round_control[1].given_chosung;
         }
       });
-    }, 3000);
+    }, 500);
   }, []);
   const checkChosung = str => {
     const cho = [
