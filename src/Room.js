@@ -112,6 +112,8 @@ export default function Room() {
         let answerList = [];
         setInterval(() => {
             let roomRef = firestore.collection('rooms').doc(localStorage.getItem('code'));
+            console.log("점수 지우기");
+            document.querySelector('.score-list-score').innerHTML='';
             roomRef.get().then((docs) => {
                 let users_local = docs.data().users;
                 let readyCount = 0;
@@ -127,27 +129,14 @@ export default function Room() {
                         const scoreList = document.querySelector('.score-list');
                         scoreList.appendChild(userName);
                         userNameList.push(user.user);
-
-                        const userScore = document.createElement('div');
-                        userScore.innerHTML = user.score_thisgame;
-                        userScore.classList.add('gamescores');
-                        const scoreListScore = document.querySelector('.score-list-score');
-                        scoreListScore.appendChild(userScore);
-                        userScoreList.push(user.score_thisgame);
-                        console.log("점수 리렌");
-    
                     }
-
-                    
-
                     const userScore = document.createElement('div');
                     userScore.innerHTML = user.score_thisgame;
                     userScore.classList.add('gamescores');
-                    const scoreList = document.querySelector('.score-list-score');
-                    scoreList.appendChild(userScore);
-                    userScoreList.push(user.score_thisgame);
-                    console.log("점수 리렌");
-
+                    const scoreListScore = document.querySelector('.score-list-score');
+                    scoreListScore.appendChild(userScore);           
+                   userScoreList.push(user.score_thisgame);
+                    console.log("점수 재리렌");
                         //점수용
 
                 })

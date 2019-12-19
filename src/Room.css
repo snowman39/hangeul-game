@@ -30,12 +30,12 @@ body{
 }
 
 .score-list{
-    position: absolute; right: 16%; top: 52%;
+    position: absolute; right: 18%; top: 52%;
     color: white;
 }
 
 .score-list-score{
-    position: absolute; right: 16%; top: 52%;
+    position: absolute; right: 12%; top: 52%;
     color: white;
 }
 
