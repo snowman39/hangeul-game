@@ -27,7 +27,7 @@ export default function Room() {
       checkAnswer.innerHTML = "자음 일치!";
       setTimeout(() => {
         checkAnswer.innerHTML = "";
-      }, 1000);
+      }, 1500);
       axios
         .get(
           `https://cors-anywhere.herokuapp.com/https://krdict.korean.go.kr/api/search?certkey_no=1154&key=${APP_KEY}&type_search=search&method=WORD_INFO&part=word&q=${word}&sort=dict`,
@@ -150,6 +150,7 @@ export default function Room() {
         let readyCount = 0;
         let chattings = [];
         chattings = docs.data().log;
+
         if (chattings.length < 10) {
           for (let i = 0; i < chattings.length; i++) {
             const userChat = document.createElement("div");
@@ -158,6 +159,7 @@ export default function Room() {
             const chatListScore = document.querySelector(".chatting-box");
             chatListScore.appendChild(userChat);
             chattingList[i] = chattings[i];
+            console.log("왜 안대 if");
           }
         } else {
           for (let i = 0; i < 10; i++) {
@@ -168,6 +170,7 @@ export default function Room() {
             chatListScore.appendChild(userChat);
             chattingList[i] = chattings.length + i - 10;
           }
+          console.log("왜 안돼 else");
         }
         users_local.forEach(user => {
           if (user.is_ready) {
@@ -244,7 +247,7 @@ export default function Room() {
           ).innerHTML = docs.data().round_control[1].given_chosung;
         }
       });
-    }, 500);
+    }, 1000);
   }, []);
   const checkChosung = str => {
     const cho = [
@@ -351,7 +354,6 @@ export default function Room() {
   };
   const onGameStart = e => {
     e.preventDefault();
-
     const timeCheck = () => {
       let roomRef = firestore
         .collection("rooms")
