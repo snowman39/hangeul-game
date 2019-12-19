@@ -133,17 +133,18 @@ export default function Room() {
     }
     return a;
   };
+
   useEffect(() => {
     let userNameList = [];
     let userScoreList = [];
     let answerList = [];
-    let chattingList = []; //채팅방 추가
+    let chattingList = []; //채팅리스트
     setInterval(() => {
       let roomRef = firestore
         .collection("rooms")
         .doc(localStorage.getItem("code"));
       document.querySelector(".score-list-score").innerHTML = ""; //점수 refresh를 위하여 제거
-      document.querySelector(".chatting-box").innerHTML = "";
+      document.querySelector(".chatting-box").innerHTML = ""; //채팅 refresh를 위하여 제거
       roomRef.get().then(docs => {
         let users_local = docs.data().users;
         let readyCount = 0;
@@ -157,7 +158,6 @@ export default function Room() {
             const chatListScore = document.querySelector(".chatting-box");
             chatListScore.appendChild(userChat);
             chattingList[i] = chattings[i];
-            console.log("10이하");
           }
         } else {
           for (let i = 0; i < 10; i++) {
@@ -167,7 +167,6 @@ export default function Room() {
             const chatListScore = document.querySelector(".chatting-box");
             chatListScore.appendChild(userChat);
             chattingList[i] = chattings.length + i - 10;
-            console.log("챗방 리렌");
           }
         }
         users_local.forEach(user => {
@@ -245,7 +244,7 @@ export default function Room() {
           ).innerHTML = docs.data().round_control[1].given_chosung;
         }
       });
-    }, 5000);
+    }, 3000);
   }, []);
   const checkChosung = str => {
     const cho = [
@@ -352,6 +351,24 @@ export default function Room() {
   };
   const onGameStart = e => {
     e.preventDefault();
+
+    const timeCheck = () => {
+      let roomRef = firestore
+        .collection("rooms")
+        .doc(localStorage.getItem("code"));
+      roomRef.get().then(docs => {
+        let startTime = docs.data().round_control[3].time_started;
+        console.log("시간 차이 : " + (Date.now() - startTime));
+        onNextRound();
+      });
+    };
+
+    setInterval(() => {
+      if (localStorage.getItem("start")) {
+        timeCheck();
+      }
+    }, 10000);
+
     console.log(localStorage.getItem("uindex"));
     const consonantList = [
       "ㄱ",
@@ -399,8 +416,8 @@ export default function Room() {
         return alert(err);
       });
   };
-  const onNextRound = e => {
-    e.preventDefault();
+
+  const onNextRound = () => {
     console.log(localStorage.getItem("uindex"));
     const consonantList = [
       "ㄱ",
@@ -443,14 +460,42 @@ export default function Room() {
           round_control: nextRoundState,
           log: docs.data().log
         });
+
+        const bubble = document.querySelector(".round");
+        switch (nextRoundState[0].round_no) {
+          case 0:
+            bubble.innerHTML = "첫 번째 판";
+            console.log("첫 번째 판");
+            break;
+          case 1:
+            bubble.innerHTML = "두 번째 판";
+            console.log("두 번째 판");
+            break;
+          case 2:
+            bubble.innerHTML = "세 번째 판";
+            console.log("세 번째 판");
+            break;
+          case 3:
+            bubble.innerHTML = "네 번째 판";
+            console.log("네 번째 판");
+            break;
+          case 4:
+            bubble.innerHTML = "마지막 판";
+            console.log("마지막 판");
+            break;
+          case 5:
+            onGameDone();
+            break;
+          default:
+            break;
+        }
       })
       .catch(err => {
         return alert(err);
       });
   };
 
-  const onGameDone = e => {
-    e.preventDefault();
+  const onGameDone = () => {
     let roomRef = firestore
       .collection("rooms")
       .doc(localStorage.getItem("code"));
@@ -485,7 +530,10 @@ export default function Room() {
         <div className="king">
           <img src={sejong} className="king" alt="왕" />
         </div>
-        <img src={bubble} className="bubble" alt="말풍선" />
+        <div className="round-num">
+          <span className="round">첫 번째 판</span>
+          <img src={bubble} className="bubble" alt="말풍선" />
+        </div>
         <div className="help">
           <img src={box} className="box" alt="설명" />
         </div>
@@ -514,14 +562,6 @@ export default function Room() {
             게임 시작!
           </button>
         )}
-
-        <button id="nextround" onClick={onNextRound}>
-          담라!!
-        </button>
-
-        <button id="gamedone" onClick={onGameDone}>
-          종료
-        </button>
 
         {start > 0 && (
           <form onSubmit={checkWord}>

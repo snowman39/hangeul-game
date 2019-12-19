@@ -1,165 +1,231 @@
-body{
-    height: 100%;
-    width: 100%;
-    display: flex;
-    background-color: #000000;
+body {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  background-color: #000000;
 }
 
-.king{
-    height: 67%;
-    width: auto;
-    position: absolute; left: 10%; top: 3%;
+.king {
+  height: 67%;
+  width: auto;
+  position: absolute;
+  left: 10%;
+  top: 3%;
 }
 
-.logo{
-    height: 38%;
-    width: auto;
-    position: absolute; left: 50%; transform: translateX(-50%); top: 3%;
+.logo {
+  height: 38%;
+  width: auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 3%;
 }
 
-.box{
-    height: 46.5%;
-    width: auto;
-    position: absolute; left: 8.2%; top: 50%;
+.box {
+  height: 46.5%;
+  width: auto;
+  position: absolute;
+  left: 8.2%;
+  top: 50%;
 }
 
-.score-box{
-    height: 45%;
-    width: auto;
-    position: absolute; right: 8.2%; top: 50%;
+.score-box {
+  height: 45%;
+  width: auto;
+  position: absolute;
+  right: 8.2%;
+  top: 50%;
 }
 
-.score-list{
-    position: absolute; right: 16%; top: 52%;
-    color: white;
+.score-list {
+  position: absolute;
+  right: 16%;
+  top: 52%;
+  color: white;
 }
 
-.score-list-score{
-    position: absolute; right: 12%; top: 52%;
-    color: white;
+.score-list-score {
+  position: absolute;
+  right: 12%;
+  top: 52%;
+  color: white;
 }
 
-.chatting-box{
-    position: absolute; left: 8.2%; top: 55%;
-    color: white;
+.chatting-box {
+  position: absolute;
+  left: 8.2%;
+  top: 55%;
+  color: white;
 }
 
-.chatting-list{
-    position: absolute; left: 8.2%; top: 50%;
-    height: 45%;
-    width: auto;
+.chatting-list {
+  position: absolute;
+  left: 8.2%;
+  top: 50%;
+  height: 45%;
+  width: auto;
 }
 
-
-.play-box{
-    height: 73%;
-    width: 58%;
-    position: absolute; left: 50%; transform: translateX(-50%); top: 22%;
+.play-box {
+  height: 73%;
+  width: 58%;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 22%;
 }
 
-.consonant{
-    background-color: white;
-    height: 8%;
-    width: 16%;
-    position: absolute; left: 50%; transform: translateX(-50%); top: 25%;
-    color: black;
+.consonant {
+  background-color: white;
+  height: 8%;
+  width: 16%;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 25%;
+  color: black;
 }
 
-.checkAnswer{
-    /* background-color: black; */
-    height: 16%;
-    width: 16%;
-    position: absolute; left: 50%; transform: translateX(-50%); top: 25%;
-    color: lightgray;
+.checkAnswer {
+  /* background-color: black; */
+  height: 16%;
+  width: 16%;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 25%;
+  color: lightgray;
 }
 
-.bubble{
-    height: 13%;
-    width: auto;
-    position: absolute; left: 18%; top: 7.5%;
+.bubble {
+  height: 100px;
+  width: auto;
+  position: absolute;
+  left: 18%;
+  top: 7.5%;
+  z-index: 1000;
 }
 
-#consonant{
-    color: black;
-    font-size: 180%;
-    font-weight: bold;
-    position: absolute; left: 50%; transform: translateX(-50%); top: 26%;
+#consonant {
+  color: black;
+  font-size: 180%;
+  font-weight: bold;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 26%;
 }
 
-#rest-time{
-    color: white;
-    position: absolute; right: 15%; top: 46%;
+#rest-time {
+  color: white;
+  position: absolute;
+  right: 15%;
+  top: 46%;
 }
 
-#timer{
-    color: white;
-    position: absolute; right: 12%; top: 46%;
+#timer {
+  color: white;
+  position: absolute;
+  right: 12%;
+  top: 46%;
 }
 
-#wordBox{
-    border: 0px;
-    height: 6%;
-    width: 16%;
-    background-color: #000000;
-    color: white;
-    font-size: 150%;
-    font-weight: bold;
-    position: absolute; left: 50%; transform: translateX(-50%); bottom: 7%;
-    text-align: center;
+#wordBox {
+  border: 0px;
+  height: 6%;
+  width: 16%;
+  background-color: #000000;
+  color: white;
+  font-size: 150%;
+  font-weight: bold;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 7%;
+  text-align: center;
 }
 
-#ready{
-    border: 0px;
-    height: 6%;
-    width: 16%;
-    background-color: #000000;
-    color: white;
-    font-size: 150%;
-    font-weight: bold;
-    position: absolute; left: 52%; transform: translateX(-50%); bottom: 8%;
-    text-align: center;
-    z-index: 1000;
+#ready {
+  border: 0px;
+  height: 6%;
+  width: 16%;
+  background-color: #000000;
+  color: white;
+  font-size: 150%;
+  font-weight: bold;
+  position: absolute;
+  left: 52%;
+  transform: translateX(-50%);
+  bottom: 8%;
+  text-align: center;
+  z-index: 1000;
 }
 
-#not-ready{
-    border: 0px;
-    height: 6%;
-    width: 16%;
-    background-color: #000000;
-    color: white;
-    font-size: 150%;
-    font-weight: bold;
-    position: absolute; left: 52%; transform: translateX(-50%); bottom: 8%;
-    text-align: center;
-    z-index: 1000;
+#not-ready {
+  border: 0px;
+  height: 6%;
+  width: 16%;
+  background-color: #000000;
+  color: white;
+  font-size: 150%;
+  font-weight: bold;
+  position: absolute;
+  left: 52%;
+  transform: translateX(-50%);
+  bottom: 8%;
+  text-align: center;
+  z-index: 1000;
 }
 
-.button-text4{
-    height: 6.5%;
-    width: 150px;
-    position: absolute; top: 18.5%;
-    color: #F5F4A7;
-    font-family: 'Nanum Gothic', sans-serif;
-    font-weight: bold;
-    font-size: 100%;
+.button-text4 {
+  height: 6.5%;
+  width: 150px;
+  position: absolute;
+  top: 18.5%;
+  color: #f5f4a7;
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: bold;
+  font-size: 100%;
 }
 
-#answer-list{
-    color: white;
-    position: absolute; left: 35%; transform: translateX(-50%); top: 36%;
-    font-weight: bold;
-    font-size: 200%;
-    display: block;
+#answer-list {
+  color: white;
+  position: absolute;
+  left: 35%;
+  transform: translateX(-50%);
+  top: 36%;
+  font-weight: bold;
+  font-size: 200%;
+  display: block;
 }
 
-.answers{
-    color: white;
-    position: relative;
-    display: inline;
-    border: 10px;
+.answers {
+  color: white;
+  position: relative;
+  display: inline;
+  border: 10px;
 }
 
-.description{
-    color: gray;
-    font-size: 50%;
+.description {
+  color: gray;
+  font-size: 50%;
+}
+
+.round-num {
+  position: absolute;
+  left: 18%;
+  top: 7.5%;
+}
+
+.round {
+  color: #f5f4a7;
+  font-weight: bold;
+  font-size: 200%;
+  position: absolute;
+  left: 80%;
+  top: 5%;
+  text-align: center;
+  width: 300px;
+  height: 100px;
 }

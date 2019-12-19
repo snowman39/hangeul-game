@@ -1,3 +1,4 @@
+/*
 {
   "env": {
     "browser": true,
@@ -25,5 +26,6 @@
           "ignoreStrings": false,
           "ignoreTemplateLiterals": false
         }
-    }
+  }
 }
+*/
