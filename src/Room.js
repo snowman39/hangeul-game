@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import logo from "./images/Logo.png";
 import sejong from "./images/Sejong.png";
 import box from "./images/HelpBox.png";
@@ -583,7 +583,11 @@ export default function Room() {
           </form>
         )}
         {end &&
-            <Redirect to ='/Rank'/>
+            <Link to="/Rank">
+              <button id="end">
+                <div className="button-text4">놀이 끛!</div>
+              </button>
+            </Link>
         }
         <img src={scoreBox} className="score-box" alt="점수판" />
         <div className="score-list"></div>

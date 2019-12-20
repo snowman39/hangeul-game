@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import sejong from "./images/Sejong.png";
 import logo from "./images/MainLogo.png";
 import bottom from "./images/Bottom.png";
 import light from "./images/Light.png";
 import arrow from "./images/Arrow.png";
 import "./Home.css";
+import Room from "./Room.js";
 import { firestore } from "./Firebase";
 
 export default function Home() {
@@ -224,14 +225,21 @@ export default function Home() {
                     className="enter"
                   />
                   {room &&
-                    <Link to ={`Room/${localStorage.getItem('code')}`}>
-                      <input
-                        type="image"
-                        src={arrow}
-                        alt="들어가기"
-                        className="arrow"
-                      />
-                    </Link>
+                    <Router>
+                      <Link exact to ={`Room/${localStorage.getItem('code')}`}>
+                        <input
+                          type="image"
+                          src={arrow}
+                          alt="들어가기"
+                          className="arrow"
+                        />
+                      </Link>
+                      <Switch>
+                        <Route path={`Room/${localStorage.getItem('code')}`}>
+                          <Room/>
+                        </Route>
+                      </Switch>
+                    </Router>
                   }
                 </form>
               </button>
@@ -246,9 +254,17 @@ export default function Home() {
                     className="new"
                   />
                   {room &&
-                    <Link to={`Room/${localStorage.getItem('code')}`}>
-                    <img src={arrow} className="arrow" alt="만들기" />
-                    </Link>
+                    <Router>
+                      <Link exact to={`Room/${localStorage.getItem('code')}`}>
+                      <img src={arrow} className="arrow" alt="만들기" />
+                      </Link>
+                      <Switch>
+                        <Route path={`Room/${localStorage.getItem('code')}`}>
+                          <Room/>
+                        </Route>
+                      </Switch>
+                      Router.refresh();
+                    </Router>
                   }
                 </form>
               </button>
