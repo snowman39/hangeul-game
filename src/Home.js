@@ -263,7 +263,6 @@ export default function Home() {
                           <Room/>
                         </Route>
                       </Switch>
-                      Router.refresh();
                     </Router>
                   }
                 </form>
