@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import sejong from "./images/Sejong.png";
 import logo from "./images/MainLogo.png";
 import bottom from "./images/Bottom.png";
@@ -223,12 +223,16 @@ export default function Home() {
                     onChange={e => setCode(e.target.value)}
                     className="enter"
                   />
-                  <input
-                    type="image"
-                    src={arrow}
-                    alt="들어가기"
-                    className="arrow"
-                  />
+                  {room &&
+                    <Link to ={`Room/${localStorage.getItem('code')}`}>
+                      <input
+                        type="image"
+                        src={arrow}
+                        alt="들어가기"
+                        className="arrow"
+                      />
+                    </Link>
+                  }
                 </form>
               </button>
               <button className="new-room">
@@ -241,16 +245,15 @@ export default function Home() {
                     onChange={e => setCode(e.target.value)}
                     className="new"
                   />
-                  <img src={arrow} className="arrow" alt="만들기" />
+                  {room &&
+                    <Link to={`Room/${localStorage.getItem('code')}`}>
+                    <img src={arrow} className="arrow" alt="만들기" />
+                    </Link>
+                  }
                 </form>
               </button>
             </div>
           )}
-          {room &&
-              
-              <Redirect push to={`Room/${localStorage.getItem('code')}`}/>
-                
-          }
         </div>
       </div>
     </div>
