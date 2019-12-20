@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Redirect } from "react-router-dom";
 import logo from "./images/Logo.png";
 import sejong from "./images/Sejong.png";
 import box from "./images/HelpBox.png";
@@ -16,6 +17,7 @@ export default function Room() {
     localStorage.getItem("allReady") ? 1 : 0
   );
   const [start, setStart] = useState(localStorage.getItem("start") ? 1 : 0);
+  const [end, setEnd] = useState(0);
   const convert = require("xml-js");
   const checkWord = e => {
     e.preventDefault();
@@ -513,9 +515,9 @@ export default function Room() {
               userRef
                 .set({ best_score: e.score_thisgame, user: user.data().user })
                 .then(() => {
+                  setEnd(1);
                   roomRef.delete().then(() => {
                     console.log("간다간다 숑간다");
-                    window.location = `../rank`;
                     localStorage.clear();
                   });
                 });
@@ -580,6 +582,9 @@ export default function Room() {
             />
           </form>
         )}
+        {end &&
+            <Redirect to ='/Rank'/>
+        }
         <img src={scoreBox} className="score-box" alt="점수판" />
         <div className="score-list"></div>
         <div className="score-list-score"></div>

@@ -12,6 +12,7 @@ export default function Home() {
   const [name, setName] = useState(null);
   const [code, setCode] = useState("");
   const [login, setLogin] = useState(0);
+  const [room, setRoom] = useState(0);
   const onStart = e => {
     e.preventDefault();
     document.getElementById("start").style.display = "none";
@@ -50,6 +51,7 @@ export default function Home() {
       });
   };
   const onNew = e => {
+    localStorage.setItem("code", code);
     e.preventDefault();
     if (!code) return alert("암호를 입력하세요.");
     firestore
@@ -87,8 +89,8 @@ export default function Home() {
             .then(() => {
               localStorage.setItem("code", code);
               localStorage.setItem("master", 1);
-              window.location = `Room/${localStorage.getItem("code")}`;
               localStorage.setItem("uindex", 0); //새로시작이니까 어차피 uindex는 0(맨위)
+              setRoom(1);
             });
         }
       })
@@ -97,7 +99,7 @@ export default function Home() {
       });
   };
   const onEnter = e => {
-    console.log("code is", code);
+    localStorage.setItem("code", code);
     e.preventDefault();
     if (!code) return alert("암호를 입력하세요.");
     let roomRef = firestore.collection("rooms").doc(code);
@@ -147,10 +149,10 @@ export default function Home() {
           return alert("해당 암호에 맞는 방이 없습니다.");
         }
         console.log(`${code} 방에 입장하셨씁니다`);
-        if (doc.exists) return <Redirect to={`Room/${code}`}/>
-        // window.location = `Room/${code}`;
+        if (doc.exists)
         localStorage.setItem("uindex", doc.data().how_many + 0); //doc.data()를 string으로 받아오는데, + 0 을 처리하며 알아서 숫자로 바꿔줌
         console.log(localStorage.getItem("uindex"));
+        setRoom(1);
       })
       .catch(err => {
         return alert(err);
@@ -244,6 +246,11 @@ export default function Home() {
               </button>
             </div>
           )}
+          {room &&
+              
+              <Redirect push to={`Room/${localStorage.getItem('code')}`}/>
+                
+          }
         </div>
       </div>
     </div>
