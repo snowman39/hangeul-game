@@ -15,7 +15,7 @@ export default function App() {
         <div>
           <Route exact path="/" component={Home}/>
           <Route path="/Rank" component={Rank}/>
-          <Route exact path={`/Room/${code}`} component={Room}/>
+          <Route path={`/Room/${code}`} exact component={Room}/>
         </div>
       </Router>
     </div>

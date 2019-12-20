@@ -537,8 +537,8 @@ export default function Room() {
           <img src={sejong} className="king" alt="왕" />
         </div>
         <div className="round-num">
-          <span className="round">첫 번째 판</span>
           <img src={bubble} className="bubble" alt="말풍선" />
+          <span className="round">첫 번째 판</span>
         </div>
         <div className="help">
           <img src={box} className="box" alt="설명" />
@@ -561,7 +561,6 @@ export default function Room() {
           </button>
         )}
         <span id="consonant"></span>
-        <span id="rest-time">남은 시간:</span>
         <span id="timer"></span>
         {allReady > 0 && localStorage.getItem("master") && (
           <button id="game-start" onClick={onGameStart}>

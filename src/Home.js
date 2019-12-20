@@ -6,7 +6,6 @@ import bottom from "./images/Bottom.png";
 import light from "./images/Light.png";
 import arrow from "./images/Arrow.png";
 import "./Home.css";
-import Room from "./Room.js";
 import { firestore } from "./Firebase";
 
 export default function Home() {
@@ -55,16 +54,13 @@ export default function Home() {
     localStorage.setItem("code", code);
     e.preventDefault();
     if (!code) return alert("암호를 입력하세요.");
-    firestore
-      .collection("rooms")
-      .doc(code)
+    let roomRef = firestore.collection("rooms").doc(code);
+    roomRef
       .get()
       .then(doc => {
         if (doc.exists) return alert("이미 있는 방입니다.");
         else {
-          firestore
-            .collection("rooms")
-            .doc(code)
+          roomRef
             .set(
               {
                 users: [
@@ -89,11 +85,21 @@ export default function Home() {
             )
             .then(() => {
               localStorage.setItem("code", code);
-              localStorage.setItem("master", 1);
-              localStorage.setItem("uindex", 0); //새로시작이니까 어차피 uindex는 0(맨위)
-              setRoom(1);
+              // localStorage.setItem("master", 1);
+              // localStorage.setItem("uindex", 0); //새로시작이니까 어차피 uindex는 0(맨위)
+              // setRoom(1);
             });
         }
+        localStorage.setItem("master", 1);
+        localStorage.setItem("uindex", 0);
+        roomRef
+        .get()
+        .then(doc => {
+          if (doc.exists) setRoom(1);
+        })
+        .catch(err => {
+          return alert(err);
+        });
       })
       .catch(err => {
         return alert(err);
@@ -225,21 +231,13 @@ export default function Home() {
                     className="enter"
                   />
                   {room &&
-                    <Router>
                       <Link exact to ={`Room/${localStorage.getItem('code')}`}>
-                        <input
-                          type="image"
+                        <img
                           src={arrow}
                           alt="들어가기"
                           className="arrow"
                         />
                       </Link>
-                      <Switch>
-                        <Route path={`Room/${localStorage.getItem('code')}`}>
-                          <Room/>
-                        </Route>
-                      </Switch>
-                    </Router>
                   }
                 </form>
               </button>
@@ -254,16 +252,13 @@ export default function Home() {
                     className="new"
                   />
                   {room &&
-                    <Router>
                       <Link exact to={`Room/${localStorage.getItem('code')}`}>
-                      <img src={arrow} className="arrow" alt="만들기" />
+                        <img
+                          src={arrow}
+                          alt="들어가기"
+                          className="arrow"
+                        />
                       </Link>
-                      <Switch>
-                        <Route path={`Room/${localStorage.getItem('code')}`}>
-                          <Room/>
-                        </Route>
-                      </Switch>
-                    </Router>
                   }
                 </form>
               </button>
