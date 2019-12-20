@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import sejong from "./images/Sejong.png";
 import logo from "./images/MainLogo.png";
 import bottom from "./images/Bottom.png";
@@ -147,7 +147,8 @@ export default function Home() {
           return alert("해당 암호에 맞는 방이 없습니다.");
         }
         console.log(`${code} 방에 입장하셨씁니다`);
-        if (doc.exists) window.location = `Room/${code}`;
+        if (doc.exists) return <Redirect to={`Room/${code}`}/>
+        // window.location = `Room/${code}`;
         localStorage.setItem("uindex", doc.data().how_many + 0); //doc.data()를 string으로 받아오는데, + 0 을 처리하며 알아서 숫자로 바꿔줌
         console.log(localStorage.getItem("uindex"));
       })
