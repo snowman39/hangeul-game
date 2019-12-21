@@ -483,7 +483,7 @@ export default function Room() {
             break;
           case 2:
             bubble.innerHTML = "두 번째 판";
-            console.log("두 번째 판");
+            console.log("두 번째 판 2");
             break;
           case 3:
             bubble.innerHTML = "세 번째 판";
