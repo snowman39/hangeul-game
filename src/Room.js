@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import logo from "./images/Logo.png";
 import sejong from "./images/Sejong.png";
 import box from "./images/HelpBox.png";
@@ -16,6 +17,7 @@ export default function Room() {
     localStorage.getItem("allReady") ? 1 : 0
   );
   const [start, setStart] = useState(localStorage.getItem("start") ? 1 : 0);
+  const [end, setEnd] = useState(0);
   const convert = require("xml-js");
   const checkWord = e => {
     e.preventDefault();
@@ -150,7 +152,6 @@ export default function Room() {
         let readyCount = 0;
         chatLatest = docs.data().log[docs.data().log.length - 1];
         if (chatLatest !== chattingList[chattingList.length - 1]) {
-          console.log("새로운 친구가 들어왔군");
           let howManyChat =
             docs.data().log.length > 10 ? 10 : docs.data().log.length;
           document.querySelector(".chatting-box").innerHTML = ""; //채팅 refresh를 위하여 제거
@@ -169,6 +170,21 @@ export default function Room() {
           }
         }
 
+        let tobeChanged = 0;
+        for (let i = 0; i < userNameList.length; i++)
+          if (userScoreList[i] != docs.data().users[0].score_thisgame)
+            tobeChanged = tobeChanged + 1;
+        if (tobeChanged) {
+          document.querySelector(".score-list-score").innerHTML = ""; //점수 refresh를 위하여 제거
+          const userScore = document.createElement("div");
+          userScore.innerHTML = user.score_thisgame;
+          userScore.classList.add("gamescores");
+          const scoreListScore = document.querySelector(".score-list-score");
+          scoreListScore.appendChild(userScore);
+          userScoreList.push(user.score_thisgame);
+          tobeChanged = 0;
+        }
+
         users_local.forEach(user => {
           if (user.is_ready) {
             readyCount = readyCount + 1;
@@ -181,14 +197,6 @@ export default function Room() {
             scoreListName.appendChild(userName);
             userNameList.push(user.user);
           }
-
-          document.querySelector(".score-list-score").innerHTML = ""; //점수 refresh를 위하여 제거
-          const userScore = document.createElement("div");
-          userScore.innerHTML = user.score_thisgame;
-          userScore.classList.add("gamescores");
-          const scoreListScore = document.querySelector(".score-list-score");
-          scoreListScore.appendChild(userScore);
-          userScoreList.push(user.score_thisgame);
         });
         let answer_local = docs.data().round_control[2].answers;
         answer_local.forEach(answer => {
@@ -512,13 +520,13 @@ export default function Room() {
               userRef
                 .set({ best_score: e.score_thisgame, user: user.data().user })
                 .then(() => {
+                  setEnd(1);
                   roomRef.delete().then(() => {
                     console.log("간다간다 숑간다");
-                    window.location = `../rank`;
                     localStorage.clear();
                   });
                 });
-              console.log(e.user, "의 맥스값이 변해용");
+              console.log(e.user, "의 랭킹이 변해용");
             }
           });
         });
@@ -534,8 +542,8 @@ export default function Room() {
           <img src={sejong} className="king" alt="왕" />
         </div>
         <div className="round-num">
-          <span className="round">첫 번째 판</span>
           <img src={bubble} className="bubble" alt="말풍선" />
+          <span className="round">첫 번째 판</span>
         </div>
         <div className="help">
           <img src={box} className="box" alt="설명" />
@@ -558,7 +566,6 @@ export default function Room() {
           </button>
         )}
         <span id="consonant"></span>
-        <span id="rest-time">남은 시간:</span>
         <span id="timer"></span>
         {allReady > 0 && localStorage.getItem("master") && (
           <button id="game-start" onClick={onGameStart}>
@@ -578,6 +585,13 @@ export default function Room() {
               }}
             />
           </form>
+        )}
+        {end && (
+          <Link to="/Rank">
+            <button id="end">
+              <div className="button-text4">놀이 끛!</div>
+            </button>
+          </Link>
         )}
         <img src={scoreBox} className="score-box" alt="점수판" />
         <div className="score-list"></div>

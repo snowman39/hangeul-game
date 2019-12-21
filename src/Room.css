@@ -40,15 +40,16 @@ body {
 
 .score-list {
   position: absolute;
-  right: 16%;
-  top: 52%;
+  right: 15%;
+  top: 53%;
   color: white;
+  font-weight: bold;
 }
 
 .score-list-score {
   position: absolute;
   right: 12%;
-  top: 52%;
+  top: 53%;
   color: white;
 }
 
@@ -102,8 +103,8 @@ body {
   height: 100px;
   width: auto;
   position: absolute;
-  left: 18%;
-  top: 7.5%;
+  left: 1%;
+  top: 5%;
   z-index: 1000;
 }
 
@@ -223,14 +224,30 @@ body {
   font-weight: bold;
   font-size: 200%;
   position: absolute;
-  left: 80%;
-  top: 5%;
+  left: 1%;
+  margin: 15px;
   text-align: center;
-  width: 300px;
-  height: 100px;
+  width: 220px;
+  height: 10px;
 }
 
 #game-start {
+  border: 0px;
+  height: 6%;
+  width: 16%;
+  background-color: #000000;
+  color: white;
+  font-size: 150%;
+  font-weight: bold;
+  position: absolute;
+  left: 52%;
+  transform: translateX(-50%);
+  bottom: 8%;
+  text-align: center;
+  z-index: 1000;
+}
+
+#end {
   border: 0px;
   height: 6%;
   width: 16%;

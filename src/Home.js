@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import sejong from "./images/Sejong.png";
 import logo from "./images/MainLogo.png";
 import bottom from "./images/Bottom.png";
@@ -12,6 +12,7 @@ export default function Home() {
   const [name, setName] = useState(null);
   const [code, setCode] = useState("");
   const [login, setLogin] = useState(0);
+  const [room, setRoom] = useState(0);
   const onStart = e => {
     e.preventDefault();
     document.getElementById("start").style.display = "none";
@@ -50,18 +51,16 @@ export default function Home() {
       });
   };
   const onNew = e => {
+    localStorage.setItem("code", code);
     e.preventDefault();
     if (!code) return alert("암호를 입력하세요.");
-    firestore
-      .collection("rooms")
-      .doc(code)
+    let roomRef = firestore.collection("rooms").doc(code);
+    roomRef
       .get()
       .then(doc => {
         if (doc.exists) return alert("이미 있는 방입니다.");
         else {
-          firestore
-            .collection("rooms")
-            .doc(code)
+          roomRef
             .set(
               {
                 users: [
@@ -86,11 +85,21 @@ export default function Home() {
             )
             .then(() => {
               localStorage.setItem("code", code);
-              localStorage.setItem("master", 1);
-              window.location = `Room/${localStorage.getItem("code")}`;
-              localStorage.setItem("uindex", 0); //새로시작이니까 어차피 uindex는 0(맨위)
+              // localStorage.setItem("master", 1);
+              // localStorage.setItem("uindex", 0); //새로시작이니까 어차피 uindex는 0(맨위)
+              // setRoom(1);
             });
         }
+        localStorage.setItem("master", 1);
+        localStorage.setItem("uindex", 0);
+        roomRef
+          .get()
+          .then(doc => {
+            if (doc.exists) setRoom(1);
+          })
+          .catch(err => {
+            return alert(err);
+          });
       })
       .catch(err => {
         return alert(err);
@@ -148,9 +157,9 @@ export default function Home() {
           return alert("해당 암호에 맞는 방이 없습니다.");
         }
         console.log(`${code} 방에 입장하셨씁니다`);
-        if (doc.exists) window.location = `Room/${code}`;
-        localStorage.setItem("uindex", doc.data().how_many + 0); //doc.data()를 string으로 받아오는데, + 0 을 처리하며 알아서 숫자로 바꿔줌
+        if (doc.exists) localStorage.setItem("uindex", doc.data().how_many + 0); //doc.data()를 string으로 받아오는데, + 0 을 처리하며 알아서 숫자로 바꿔줌
         console.log(localStorage.getItem("uindex"));
+        setRoom(1);
       })
       .catch(err => {
         return alert(err);
@@ -221,12 +230,11 @@ export default function Home() {
                     onChange={e => setCode(e.target.value)}
                     className="enter"
                   />
-                  <input
-                    type="image"
-                    src={arrow}
-                    alt="들어가기"
-                    className="arrow"
-                  />
+                  {room && (
+                    <Link exact to={`Room/${localStorage.getItem("code")}`}>
+                      <img src={arrow} alt="들어가기" className="arrow" />
+                    </Link>
+                  )}
                 </form>
               </button>
               <button className="new-room">
@@ -239,7 +247,11 @@ export default function Home() {
                     onChange={e => setCode(e.target.value)}
                     className="new"
                   />
-                  <img src={arrow} className="arrow" alt="만들기" />
+                  {room && (
+                    <Link exact to={`Room/${localStorage.getItem("code")}`}>
+                      <img src={arrow} alt="들어가기" className="arrow" />
+                    </Link>
+                  )}
                 </form>
               </button>
             </div>
