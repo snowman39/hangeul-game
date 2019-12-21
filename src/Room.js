@@ -171,18 +171,21 @@ export default function Room() {
         }
 
         let tobeChanged = 0;
-        for (let i = 0; i < userNameList.length; i++)
-          if (userScoreList[i] != docs.data().users[0].score_thisgame)
+        for (let i = 0; i < docs.data().how_many; i++)
+          if (userScoreList[i] != docs.data().users[i].score_thisgame)
             tobeChanged = tobeChanged + 1;
         if (tobeChanged) {
+          userScoreList = [];
           document.querySelector(".score-list-score").innerHTML = ""; //점수 refresh를 위하여 제거
-          const userScore = document.createElement("div");
-          userScore.innerHTML = user.score_thisgame;
-          userScore.classList.add("gamescores");
-          const scoreListScore = document.querySelector(".score-list-score");
-          scoreListScore.appendChild(userScore);
-          userScoreList.push(user.score_thisgame);
-          tobeChanged = 0;
+          users_local.forEach(user => {
+            const userScore = document.createElement("div");
+            userScore.innerHTML = user.score_thisgame;
+            userScore.classList.add("gamescores");
+            const scoreListScore = document.querySelector(".score-list-score");
+            scoreListScore.appendChild(userScore);
+            userScoreList.push(user.score_thisgame);
+            tobeChanged = 0;
+          });
         }
 
         users_local.forEach(user => {
