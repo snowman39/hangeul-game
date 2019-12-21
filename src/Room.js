@@ -138,40 +138,54 @@ export default function Room() {
     let userNameList = [];
     let userScoreList = [];
     let answerList = [];
-    let chattingList = []; //채팅리스트
+    let chattingList = [];
+    let chatLatest;
     setInterval(() => {
       let roomRef = firestore
         .collection("rooms")
         .doc(localStorage.getItem("code"));
-      document.querySelector(".score-list-score").innerHTML = ""; //점수 refresh를 위하여 제거
-      document.querySelector(".chatting-box").innerHTML = ""; //채팅 refresh를 위하여 제거
       roomRef.get().then(docs => {
+        //        if(is_playing===1 && docs.data().master)
         let users_local = docs.data().users;
         let readyCount = 0;
-        let chattings = [];
-        chattings = docs.data().log;
-
-        if (chattings.length < 10) {
-          for (let i = 0; i < chattings.length; i++) {
+        chatLatest = docs.data().log[docs.data().log.length - 1];
+        if (chatLatest !== chattingList[chattingList.length - 1]) {
+          let howManyChat =
+            docs.data().log.length > 10 ? 10 : docs.data().log.length;
+          document.querySelector(".chatting-box").innerHTML = ""; //채팅 refresh를 위하여 제거
+          console.log(howManyChat);
+          for (let i = 0; i < howManyChat; i++) {
             const userChat = document.createElement("div");
-            userChat.innerHTML = chattings[i];
+            userChat.innerHTML = docs.data().log[
+              docs.data().log.length - howManyChat + i
+            ];
             userChat.classList.add("gamechats");
-            const chatListScore = document.querySelector(".chatting-box");
-            chatListScore.appendChild(userChat);
-            chattingList[i] = chattings[i];
-            console.log("왜 안대 if");
+            const chatListBox = document.querySelector(".chatting-box");
+            chatListBox.appendChild(userChat);
+            chattingList[i] = docs.data().log[
+              docs.data().log.length - howManyChat + i
+            ];
           }
-        } else {
-          for (let i = 0; i < 10; i++) {
-            const userChat = document.createElement("div");
-            userChat.innerHTML = chattings[chattings.length + i - 10];
-            userChat.classList.add("gamechats");
-            const chatListScore = document.querySelector(".chatting-box");
-            chatListScore.appendChild(userChat);
-            chattingList[i] = chattings.length + i - 10;
-          }
-          console.log("왜 안돼 else");
         }
+
+        let tobeChanged = 0;
+        for (let i = 0; i < docs.data().how_many; i++)
+          if (userScoreList[i] !== docs.data().users[i].score_thisgame)
+            tobeChanged = tobeChanged + 1;
+        if (tobeChanged) {
+          userScoreList = [];
+          document.querySelector(".score-list-score").innerHTML = ""; //점수 refresh를 위하여 제거
+          users_local.forEach(user => {
+            const userScore = document.createElement("div");
+            userScore.innerHTML = user.score_thisgame;
+            userScore.classList.add("gamescores");
+            const scoreListScore = document.querySelector(".score-list-score");
+            scoreListScore.appendChild(userScore);
+            userScoreList.push(user.score_thisgame);
+            tobeChanged = 0;
+          });
+        }
+
         users_local.forEach(user => {
           if (user.is_ready) {
             readyCount = readyCount + 1;
@@ -180,16 +194,10 @@ export default function Room() {
             const userName = document.createElement("div");
             userName.innerHTML = user.user;
             userName.classList.add("participants");
-            const scoreList = document.querySelector(".score-list");
-            scoreList.appendChild(userName);
+            const scoreListName = document.querySelector(".score-list");
+            scoreListName.appendChild(userName);
             userNameList.push(user.user);
           }
-          const userScore = document.createElement("div");
-          userScore.innerHTML = user.score_thisgame;
-          userScore.classList.add("gamescores");
-          const scoreListScore = document.querySelector(".score-list-score");
-          scoreListScore.appendChild(userScore);
-          userScoreList.push(user.score_thisgame);
         });
         let answer_local = docs.data().round_control[2].answers;
         answer_local.forEach(answer => {
