@@ -1,3 +1,6 @@
+//surge 포기, window.location 사용. 추후 firebase update 예정
+// round 하나가 끝나고 한 2초 정도 휴식이 추가될 예정
+
 import React, { useState, useEffect } from "react";
 import logo from "./images/Logo.png";
 import sejong from "./images/Sejong.png";
