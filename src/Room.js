@@ -133,7 +133,6 @@ export default function Room() {
     }
     return a;
   };
-
   useEffect(() => {
     let userNameList = [];
     let userScoreList = [];
@@ -167,7 +166,6 @@ export default function Room() {
             ];
           }
         }
-
         let tobeChanged = 0;
         for (let i = 0; i < docs.data().how_many; i++)
           if (userScoreList[i] !== docs.data().users[i].score_thisgame)
