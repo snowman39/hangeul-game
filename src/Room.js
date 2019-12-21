@@ -1,6 +1,5 @@
 //surge 포기, window.location 사용. 추후 firebase update 예정
 // round 하나가 끝나고 한 2초 정도 휴식이 추가될 예정
-
 import React, { useState, useEffect } from "react";
 import logo from "./images/Logo.png";
 import sejong from "./images/Sejong.png";
@@ -476,11 +475,11 @@ export default function Room() {
         switch (nextRoundState[0].round_no) {
           case 0:
             bubble.innerHTML = "첫 번째 판";
-            console.log("첫 번째 판");
+            console.log("첫 번째 판 1");
             break;
           case 1:
             bubble.innerHTML = "첫 번째 판";
-            console.log("첫 번째 판");
+            console.log("첫 번째 판 2");
             break;
           case 2:
             bubble.innerHTML = "두 번째 판";
