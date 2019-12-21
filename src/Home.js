@@ -97,8 +97,9 @@ export default function Home() {
       });
   };
   const onEnter = e => {
-    console.log("code is", code);
     e.preventDefault();
+    console.log("code is", code);
+    localStorage.setItem("code", code);
     if (!code) return alert("암호를 입력하세요.");
     let roomRef = firestore.collection("rooms").doc(code);
     roomRef
