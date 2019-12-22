@@ -5,8 +5,7 @@ import box from './images/RankBox.png';
 import './Rank.css';
 import { firestore } from "./Firebase";
 
-export default function Rank() { // setInterval로 두기
-
+export default function Rank() {
   let rawList = {};
   let userRef = firestore.collection('users')
   userRef.get().then((docs) => {

@@ -262,3 +262,11 @@ body {
   text-align: center;
   z-index: 1000;
 }
+
+.gamechats {
+  width: 100px;
+  margin: 5px;
+  font-weight: bold;
+  position: relative;
+  bottom: 5%;
+}
