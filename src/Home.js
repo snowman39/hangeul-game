@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Link } from "react-router-dom";
 import sejong from "./images/Sejong.png";
 import logo from "./images/MainLogo.png";
 import bottom from "./images/Bottom.png";

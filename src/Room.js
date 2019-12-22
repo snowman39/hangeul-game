@@ -141,6 +141,7 @@ export default function Room() {
     let userScoreList = [];
     let answerList = [];
     let chattingList = []; //채팅리스트
+    let chatLatest;
     setInterval(() => {
       let roomRef = firestore
         .collection("rooms")
@@ -148,8 +149,10 @@ export default function Room() {
       document.querySelector(".score-list-score").innerHTML = ""; //점수 refresh를 위하여 제거
       document.querySelector(".chatting-box").innerHTML = ""; //채팅 refresh를 위하여 제거
       roomRef.get().then(docs => {
+        console.log(docs.data());
         let users_local = docs.data().users;
         let readyCount = 0;
+        chatLatest = docs.data().log[docs.data().log.length - 1];
         let chattings = [];
         chattings = docs.data().log;
 
@@ -373,6 +376,10 @@ export default function Room() {
       }
     }, 10000);
 
+    setInterval(() => {
+      setEnd(1);
+    }, 50000);
+
     console.log(localStorage.getItem("uindex"));
     const consonantList = [
       "ㄱ",
@@ -584,7 +591,7 @@ export default function Room() {
         {end &&
             <Link to="/Rank">
               <button id="end">
-                <div className="button-text4">놀이 끛!</div>
+                <div className="button-text4">놀이 끝!</div>
               </button>
             </Link>
         }
