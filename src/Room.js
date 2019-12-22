@@ -44,7 +44,6 @@ export default function Room() {
         })
         .then(response => {
           if (response.channel.item) {
-            console.log("PASS");
             document.querySelector(".checkAnswer").innerHTML = "PASS";
             setTimeout(() => {
               document.querySelector(".checkAnswer").innerHTML = "";
@@ -69,10 +68,6 @@ export default function Room() {
                   Math.floor(
                     10000000 / (Date.now() - roundInfo[3].time_started)
                   );
-                console.log(
-                  `${ingameUserinfo[uindex].user}의 지금 점수`,
-                  ingameUserinfo[uindex].score_thisgame
-                );
                 roomRef.set({
                   users: ingameUserinfo,
                   how_many: docs.data().how_many,
@@ -89,19 +84,7 @@ export default function Room() {
                 });
               }
             });
-            if (response.channel.item.length > 1) {
-              if (response.channel.item[0].sense.length > 1) {
-                console.log(response.channel.item[0].sense[0].definition._text);
-              } else {
-                console.log(response.channel.item[0].sense.definition._text);
-              }
-            } else if (response.channel.item.length === 1) {
-              console.log(response.channel.item.sense.definition._text);
-            } else {
-              console.log("오, 이런 어려운 단어도 알다니! 아주 칭찬해~");
-            }
           } else {
-            console.log();
             checkAnswer.innerHTML = "WRONG";
             setTimeout(() => {
               checkAnswer.innerHTML = "";
@@ -154,7 +137,6 @@ export default function Room() {
           let howManyChat =
             docs.data().log.length > 10 ? 10 : docs.data().log.length;
           document.querySelector(".chatting-box").innerHTML = ""; //채팅 refresh를 위하여 제거
-          console.log(howManyChat);
           for (let i = 0; i < howManyChat; i++) {
             const userChat = document.createElement("div");
             userChat.innerHTML = docs.data().log[
@@ -218,7 +200,6 @@ export default function Room() {
                 return JSON.parse(result);
               })
               .then(response => {
-                console.log(response);
                 if (response.channel.item.length > 1) {
                   if (response.channel.item[0].sense.length > 1) {
                     description.innerText =
@@ -367,7 +348,6 @@ export default function Room() {
         .doc(localStorage.getItem("code"));
       roomRef.get().then(docs => {
         let startTime = docs.data().round_control[3].time_started;
-        console.log("시간 차이 : " + (Date.now() - startTime));
         onNextRound();
       });
     };
@@ -382,7 +362,6 @@ export default function Room() {
       setEnd(1);
     }, 50000);
 
-    console.log(localStorage.getItem("uindex"));
     const consonantList = [
       "ㄱ",
       "ㄴ",
@@ -431,7 +410,6 @@ export default function Room() {
   };
 
   const onNextRound = () => {
-    console.log(localStorage.getItem("uindex"));
     const consonantList = [
       "ㄱ",
       "ㄴ",
@@ -478,27 +456,21 @@ export default function Room() {
         switch (nextRoundState[0].round_no) {
           case 0:
             bubble.innerHTML = "첫 번째 판";
-            console.log("첫 번째 판");
             break;
           case 1:
             bubble.innerHTML = "첫 번째 판";
-            console.log("첫 번째 판");
             break;
           case 2:
             bubble.innerHTML = "두 번째 판";
-            console.log("두 번째 판");
             break;
           case 3:
             bubble.innerHTML = "세 번째 판";
-            console.log("세 번째 판");
             break;
           case 4:
             bubble.innerHTML = "네 번째 판";
-            console.log("네 번째 판");
             break;
           case 5:
             bubble.innerHTML = "마지막 판";
-            console.log("마지막 판");
             roomRef
             .get()
             .then(docs => {
@@ -509,7 +481,6 @@ export default function Room() {
                     userRef
                       .set({ best_score: e.score_thisgame, user: user.data().user })
 
-                    console.log(e.user, "의 맥스값이 변해용");
                   }
                 });
               });
@@ -556,7 +527,7 @@ export default function Room() {
         )}
         <span id="consonant"></span>
         <span id="timer"></span>
-        {allReady > 0 && localStorage.getItem("master") && (
+        {allReady > 0 &&  (
           <button id="game-start" onClick={onGameStart}>
             게임 시작!
           </button>

@@ -34,7 +34,6 @@ export default function Home() {
       .then(doc => {
         if (doc.exists) return alert("이미 있는 별명입니다.");
         else {
-          console.log("여기까진 왔다!");
           firestore
             .collection("users")
             .doc(name)
@@ -67,7 +66,7 @@ export default function Home() {
                   {
                     user: localStorage.getItem("uid"),
                     score_thisgame: 0,
-                    is_ready: false,
+                    is_ready: true,
                     is_master: true
                   }
                 ],
@@ -147,18 +146,14 @@ export default function Home() {
                 })
                 .then(() => {
                   localStorage.setItem("code", code);
-                  console.log("간다간다 쑝간다");
-                  console.log(doc.exists);
                 });
             }
           }
         } else {
           return alert("해당 암호에 맞는 방이 없습니다.");
         }
-        console.log(`${code} 방에 입장하셨씁니다`);
         if (doc.exists)
         localStorage.setItem("uindex", doc.data().how_many + 0); //doc.data()를 string으로 받아오는데, + 0 을 처리하며 알아서 숫자로 바꿔줌
-        console.log(localStorage.getItem("uindex"));
         setRoom(1);
       })
       .catch(err => {
@@ -169,7 +164,7 @@ export default function Home() {
     <div className="background">
       <div>
         <div>
-          <Link exact to="/Rank">
+          <Link to="/Rank">
             <img src={sejong} className="sejong" alt="명예의 전당" />
           </Link>
         </div>
@@ -221,7 +216,7 @@ export default function Home() {
           {login > 0 && (
             <div>
               <button className="enter-room">
-                <div className="button-text3">기존 방</div>
+                <div className="button-text3">방 들어가기</div>
                 <form onSubmit={onEnter}>
                   <input
                     type="text"
@@ -231,7 +226,7 @@ export default function Home() {
                     className="enter"
                   />
                   {room &&
-                      <Link exact to ={`Room/${localStorage.getItem('code')}`}>
+                      <Link to ={`Room/${localStorage.getItem('code')}`}>
                         <img
                           src={arrow}
                           alt="들어가기"
@@ -242,7 +237,7 @@ export default function Home() {
                 </form>
               </button>
               <button className="new-room">
-                <div className="button-text3">새로운 방</div>
+                <div className="button-text3">방 만들기</div>
                 <form onSubmit={onNew}>
                   <input
                     type="text"
@@ -252,7 +247,7 @@ export default function Home() {
                     className="new"
                   />
                   {room &&
-                      <Link exact to={`Room/${localStorage.getItem('code')}`}>
+                      <Link to={`Room/${localStorage.getItem('code')}`}>
                         <img
                           src={arrow}
                           alt="들어가기"

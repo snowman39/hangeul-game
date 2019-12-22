@@ -23,13 +23,12 @@ export default function Rank() {
     if (items.length >= 10) {
       let rankList = items.slice(0, 10)
       for (let i=0; i<10; i++) {
-        console.log(rankList[i][0], rankList[i][1]);
         const ranker = document.createElement("div");
         ranker.innerHTML = (i+1) + "위 " + rankList[i][0] + " " + rankList[i][1];
         document.querySelector(".rankList").appendChild(ranker);
       }
     } else {
-      console.log(items)
+      console.log()
     }
 })
 
